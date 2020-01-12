@@ -4,23 +4,23 @@ Matchmaking system for quickly ranking huge collections of images.
 
 ## High-level goals
 
-- Uses simple Python web app framework (flask?)
-- Runs from the commandline and is given paths to find images
-- Launches app in browser
-- Displays multiple (default: two) photos
-- Prioritize the ranking of images with no rank, and then prioritize images
-  Which haven't been matched for the longest time
-- Photos are now in a match. you click the winner
-- App uses ELO type algo to determine new ranks
-- Ranks written to file metadata (document format so other apps can work with
-  it)
-- No other data store is used
-- New photos are displayed
-- App should be as responsive as possible to aid speed of use
-- You can quit any time while playing
-- Compatibility with as many browser plugins as possible is desirable (e.g.,
+- [ ] Uses simple Python web app framework (Flask?)
+- [ ] Runs from the commandline and is given paths to find images
+- [ ] Launches app in browser
+- [ ] Displays multiple (default: two) photos
+- [ ] Prioritize the ranking of images with no rank, and then prioritize images
+  [ ] Which haven't been matched for the longest time
+- [ ] Photos are now in a match. you click the winner
+- [ ] App uses ELO type algo to determine new ranks
+- [ ] Ranks written to file metadata (document format so other apps can work
+  with it)
+- [ ] No other data store is used
+- [ ] New photos are displayed
+- [ ] App should be as responsive as possible to aid speed of use
+- [ ] You can quit any time while playing
+- [ ] Compatibility with as many browser plugins as possible is desirable (e.g.,
   Image zoom plugins)
-- App should be able to be run on a server as a long-running app
+- [ ] App should be able to be run on a server as a long-running app
 
 ## Initial milestones
 
