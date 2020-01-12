@@ -41,8 +41,8 @@ MVP
 - [] Document metadata format
 - [] Modify app to read metadata
 - [] Modify app to select images with a preference for images with no existing
-     metadata, and then images that had not been modified for a longer amount of
-     time
+  metadata, and then images that had not been modified for a longer amount of
+  time
 - [] Modify app display images in a form which can be submitted by selecting one
 - [] Modify app to calculate ranks and write to image metadata
 
@@ -64,14 +64,14 @@ Chrome extensions compatibility
 -------------------------------
 
 - [] Test interface for compatibility with relevant Chrome browser extensions
-     (e.g., image zoom extensions)
+  (e.g., image zoom extensions)
 - Modify interface to improve compatibility
 
 Speed improvements
 ------------------
 
 - [] Add options to cli script to intermittently load small random batches of
-     images to speed things up with large collections
+  images to speed things up with large collections
 
 Match enhancements
 ------------------
