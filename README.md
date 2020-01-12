@@ -39,6 +39,7 @@ Matchmaking system for quickly ranking huge collections of images.
 - [X] Modify app display two random images side-by-side
 - [X] Modify app to use a form to select one image
 - [X] Modify app to calculate new ranks and write to image metadata
+- [X] Record ranks using filenames
 
 ### Improve MVP
 

@@ -2,10 +2,12 @@ import mimetypes
 import os
 import pathlib
 import random
+import re
+import shutil
 import sys
 import threading
-import webbrowser
 import urllib
+import webbrowser
 
 from flask import request
 
@@ -33,59 +35,70 @@ SUPPORTED_EXTS = [
 ]
 
 filenames = sys.argv[1:]
-eligible_filenames = []
+eligible_filenames = set()
 for filename in filenames:
     filename_ext = pathlib.Path(filename).suffix.lower()
     if filename_ext not in SUPPORTED_EXTS:
         continue
-    eligible_filenames.append(filename)
+    eligible_filenames.add(filename)
+
+def rank(rating):
+    return str(50 - round(rating.mu - (3 * rating.sigma)))
 
 def get_file(filename):
     file_xattr = xattr.xattr(filename)
     try:
         mu = file_xattr.get(MU_XATTR)
+        mu = float(mu.decode("UTF8"))
     except OSError:
         mu = None
     try:
         sigma = file_xattr.get(SIGMA_XATTR)
+        sigma = float(sigma.decode("UTF8"))
     except OSError:
         sigma = None
     previous_rating = False
     if mu is not None or sigma is not None:
         previous_rating = True
-    mu = float(mu.decode("UTF8"))
-    sigma = float(sigma.decode("UTF8"))
     rating = trueskill.Rating(mu=mu, sigma=sigma)
     return {
         "filename": quote(filename),
         "mtime": os.path.getmtime(filename),
         "previous_rating": previous_rating,
-        "rating": rating
+        "rating": rating,
+        "rank": rank(rating)
     }
 
-def update_file(filename, mu, sigma):
-    file_xattr = xattr.xattr(unquote(filename))
-    file_xattr.set(MU_XATTR, str(mu).encode('UTF8'))
-    file_xattr.set(SIGMA_XATTR, str(sigma).encode('UTF8'))
+def update_file(filename, rating):
+    filename = unquote(filename)
+    file_xattr = xattr.xattr(filename)
+    file_xattr.set(MU_XATTR, str(rating.mu).encode('UTF8'))
+    file_xattr.set(SIGMA_XATTR, str(rating.sigma).encode('UTF8'))
+    path = pathlib.PurePath(filename)
+    suffix = re.split('^(\d\dR)\s+?', path.name)[-1]
+    new_name = "%sR %s" % (rank(rating), suffix)
+    new_filename = str(path.parent.joinpath(new_name))
+    shutil.move(filename, new_filename)
+    eligible_filenames.discard(filename)
+    eligible_filenames.add(new_filename)
 
 def update_rankings(win, lose):
     win_file = get_file(win)
     lose_file = get_file(lose)
     win_rating, lose_rating = \
         trueskill.rate_1vs1(win_file["rating"], lose_file["rating"])
-    print("before")
-    print(win_file["filename"] + " - " + pformat(win_file["rating"]))
-    print(lose_file["filename"] + " - " + pformat(lose_file["rating"]))
-    print("after")
-    print(win_file["filename"] + " - " + pformat(win_rating))
-    print(lose_file["filename"] + " - " + pformat(lose_rating))
-    update_file(win_file["filename"], win_rating.mu, win_rating.sigma)
-    update_file(lose_file["filename"], lose_rating.mu, lose_rating.sigma)
+    print("Before:")
+    print("  Win:  " + rank(win_file["rating"]) + " " + win_file["filename"])
+    print("  Lose: " + rank(lose_file["rating"]) + " " + lose_file["filename"])
+    print("After:")
+    print("  Win:  " + rank(win_rating) + " " + win_file["filename"])
+    print("  Lose: " + rank(lose_rating) + " " + lose_file["filename"])
+    update_file(win_file["filename"], win_rating)
+    update_file(lose_file["filename"], lose_rating)
 
 @app.route('/img')
 def img():
     filename = request.args.get('filename')
-    print("display: " + filename)
     img_file = open(filename, "rb")
     mimetype = mimetypes.guess_type(filename)[0]
     return flask.send_file(img_file, mimetype=mimetype)
