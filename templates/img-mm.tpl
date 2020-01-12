@@ -17,11 +17,10 @@ img {
   <form>
   <input type="hidden" name="win" value="{{ files[0]['filename'] }}">
   <input type="hidden" name="lose" value="{{ files[1]['filename'] }}">
-  <img src="img?filename={{ files[0]['filename'] }}" onclick="submit()">
+  <img src="img?filename={{ files[0]['filename'] }}" title="{{ files[0]['rating'] }}" onclick="submit()" >
 
 
   <form>
   <input type="hidden" name="win" value="{{ files[1]['filename'] }}">
   <input type="hidden" name="lose" value="{{ files[0]['filename'] }}">
-  <img src="img?filename={{ files[1]['filename'] }}" onclick="submit()">
-
+  <img src="img?filename={{ files[1]['filename'] }}" title="{{ files[1]['rating'] }}" onclick="submit()">
