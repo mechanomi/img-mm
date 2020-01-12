@@ -1,4 +1,6 @@
-# img-mm
+# Image Matchmaker
+
+Matchmaking system for quickly ranking huge collections of images.
 
 high-level goals:
 
