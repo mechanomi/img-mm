@@ -31,7 +31,7 @@ Matchmaking system for quickly ranking huge collections of images.
 - [x] Write initial "Hello world!"
   [Flask](https://www.palletsprojects.com/p/flask/) app
 - [x] Add script auto-reloading when source files change
-- [ ] Modify app to load filenames from sys.argv and read metadata into memory
+- [x] Modify app to load filenames from sys.argv and read metadata into memory
 - [ ] Research and decide on ELO algo
 - [ ] Research and decide upon metadata format
 - [ ] Document metadata format

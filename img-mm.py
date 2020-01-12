@@ -12,9 +12,18 @@ APP_URL = 'http://127.0.0.1:5000/'
 TEMPLATE = "img-mm.tpl"
 
 @app.route('/')
-def hello_world():
-    context = {"argv": sys.argv}
-    return flask.render_template(TEMPLATE, context=context)
+def main():
+    filenames = sys.argv[1:]
+    files = []
+    for filename in filenames:
+        files.append({
+            "filename": filename,
+            "mtime": os.path.getmtime(filename)
+        })
+    context = {
+        "files": files
+    }
+    return flask.render_template(TEMPLATE, **context)
 
 if __name__ == '__main__':
     # Prevent multiple browser windows being opened because of code reloading
