@@ -1,3 +1,6 @@
 . activate.sh
 
+export FLASK_ENV=development
+
 ls /tmp/img-mm-samples | xargs $BIN/python img-mm.py
+
