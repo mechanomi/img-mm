@@ -31,45 +31,52 @@ Initial milestones
 MVP
 ---
 
-- Research and pick Python web app framework
-- Write initial hello world app
-- Add cli script that opens the app in a browser window
-- Add options to cli script to specify where to look for images
-- Modify app to search for images and all into memory
-- Research and decide on ELO algo
-- Research and decide upon metadata format
-- Document metadata format
-- Modify app to read metadata
-- Modify app to select images with a preference for images with no existing
-  Metadata, and then images that had not been modified for a longer amount of
-  time
-- Modify app display images in a form which can be submitted by selecting one
-- Modify app to calculate ranks and write to image metadata
+- [] Research and pick Python web app framework
+- [] Write initial hello world app
+- [] Add cli script that opens the app in a browser window
+- [] Add options to cli script to specify where to look for images
+- [] Modify app to search for images and all into memory
+- [] Research and decide on ELO algo
+- [] Research and decide upon metadata format
+- [] Document metadata format
+- [] Modify app to read metadata
+- [] Modify app to select images with a preference for images with no existing
+     metadata, and then images that had not been modified for a longer amount of
+     time
+- [] Modify app display images in a form which can be submitted by selecting one
+- [] Modify app to calculate ranks and write to image metadata
 
 Project setup
 -------------
 
-- Write initial Travis CI tests
-- Write initial docs
-- Set up PyPI build
+- [] Write initial Travis CI tests
+- [] Research functional testing frameworks and implement initial tests
+- [] Research code standard testing frameworks and implement initial tests
+- [] Create initial docs project infrastructure
+- [] Host docs on Read The Docs
+- [] Write the initial docs
+- [] Write initial docs tests
+- [] Add top-level documentation
+- [] Set up PyPI package
+- [] Develop release process
 
 Chrome extensions compatibility
 -------------------------------
 
-- Test interface for compatibility with relevant Chrome browser extensions
-  (e.g., image zoom extensions)
+- [] Test interface for compatibility with relevant Chrome browser extensions
+     (e.g., image zoom extensions)
 - Modify interface to improve compatibility
 
 Speed improvements
 ------------------
 
-- Add options to cli script to intermittently load small random batches of
-  images to speed things up with large collections
+- [] Add options to cli script to intermittently load small random batches of
+     images to speed things up with large collections
 
 Match enhancements
 ------------------
 
-- Add options to cli script to specify how many images to put in a match
+- [] Add options to cli script to specify how many images to put in a match
 
 Interface enchainments
 ----------------------
