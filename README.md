@@ -4,7 +4,7 @@ Matchmaking system for quickly ranking huge collections of images.
 
 ## High-level goals
 
-- [ ] Uses simple Python web app framework (Flask?)
+- [x] Uses simple Python web app framework (Flask?)
 - [ ] Runs from the commandline and is given paths to find images
 - [ ] Launches app in browser
 - [ ] Displays multiple (default: two) photos
@@ -27,8 +27,8 @@ Matchmaking system for quickly ranking huge collections of images.
 ### MVP
 
 
-- [ ] Research and pick Python web app framework
-- [ ] Write initial hello world app
+- [x] Research and pick Python web app framework
+- [x] Write initial hello world app
 - [ ] Add cli script that opens the app in a browser window
 - [ ] Add options to cli script to specify where to look for images
 - [ ] Modify app to search for images and all into memory
