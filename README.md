@@ -16,6 +16,7 @@ high-level goals:
 - app should be as responsive as possible to aid speed of use
 - you can quit any time while playing
 - compatibility with as many brower plugins as possible is desirable (e.g., image zoom plugins)
+- app should be able to be run on a server as a long-running app
 
 initial milestones:
 
