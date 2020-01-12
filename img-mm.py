@@ -4,7 +4,7 @@ import webbrowser
 import threading
 
 import flask
-
+import trueskill
 
 app = flask.Flask(__name__)
 
@@ -18,7 +18,8 @@ def main():
     for filename in filenames:
         files.append({
             "filename": filename,
-            "mtime": os.path.getmtime(filename)
+            "mtime": os.path.getmtime(filename),
+            "rating": trueskill.Rating()
         })
     context = {
         "files": files

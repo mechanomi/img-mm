@@ -1,5 +1,9 @@
 <ul>
 {% for file in files %}
-  <li>{{ file["filename"] }} - {{ file["mtime"] }}</a></li>
+  <li>
+    filename: {{ file["filename"] }}<br>
+    mtime: {{ file["mtime"] }}<br>
+    rating: {{ file["rating"] }}
+  </li>
 {% endfor %}
 </ul>
