@@ -1,7 +1,11 @@
+import mimetypes
 import os
+import pathlib
+import random
 import sys
-import webbrowser
 import threading
+import webbrowser
+import urllib
 
 import flask
 import trueskill
@@ -13,12 +17,30 @@ APP_URL = 'http://127.0.0.1:5000/'
 TEMPLATE = "img-mm.tpl"
 MU_XATTR = "ts.mu"
 SIGMA_XATTR = "ts.sigma"
+SUPPORTED_EXTS = [
+    ".bmp"
+    ".gif",
+    ".jpeg",
+    ".jpg",
+    ".png",
+    ".webp",
+]
+
+@app.route('/img')
+def img():
+    filename = flask.request.args.get('filename')
+    img_file = open(filename, "rb")
+    mimetype = mimetypes.guess_type(filename)[0]
+    return flask.send_file(img_file, mimetype=mimetype)
 
 @app.route('/')
-def main():
+def index():
     filenames = sys.argv[1:]
     files = []
     for filename in filenames:
+        filename_ext = pathlib.Path(filename).suffix.lower()
+        if filename_ext not in SUPPORTED_EXTS:
+            continue
         file_xattr = xattr.xattr(filename)
         try:
             mu = file_xattr.get(MU_XATTR)
@@ -33,13 +55,13 @@ def main():
             previous_rating = True
         rating = trueskill.Rating(mu=mu, sigma=sigma)
         files.append({
-            "filename": filename,
+            "filename": urllib.parse.quote(filename),
             "mtime": os.path.getmtime(filename),
             "previous_rating": previous_rating,
             "rating": rating
         })
     context = {
-        "files": files
+        "files": random.sample(files, 2)
     }
     return flask.render_template(TEMPLATE, **context)
 

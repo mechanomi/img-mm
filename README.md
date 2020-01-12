@@ -35,9 +35,10 @@ Matchmaking system for quickly ranking huge collections of images.
 - [x] Research and decide on ELO algo
 - [X] Research and decide upon metadata format
 - [X] Modify app to read metadata
-- [ ] Modify app display images in a form which can be submitted by selecting
-  one
-- [ ] Modify app to calculate ranks and write to image metadata
+- [X] Add filter for unsupported file types
+- [X] Modify app display two random images side-by-side
+- [ ] Modify app to use a form to select one image
+- [ ] Modify app to calculate new ranks and write to image metadata
 
 ### Improve MVP
 

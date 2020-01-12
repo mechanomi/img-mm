@@ -1,10 +1,18 @@
-<ul>
+<style>
+
+body {
+  background: url(img?filename=assets/bg.png);
+  margin: 2%;
+  text-align: center;
+}
+
+img {
+    width: 45%;
+    margin: 2%;
+}
+
+</style>
+
 {% for file in files %}
-  <li>
-    filename: {{ file["filename"] }}<br>
-    mtime: {{ file["mtime"] }}<br>
-    previous_rating: {{ file["previous_rating"] }}<br>
-    rating: {{ file["rating"] }}<br>
-  </li>
+  <img src="img?filename={{ file["filename"] }}">
 {% endfor %}
-</ul>
