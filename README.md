@@ -30,11 +30,7 @@ Matchmaking system for quickly ranking huge collections of images.
 - [x] Research and pick Python web app framework
 - [x] Write initial "Hello world!"
   [Flask](https://www.palletsprojects.com/p/flask/) app
-- [ ] Add CLI script (using
-  [Click](https://www.palletsprojects.com/p/click/)) that opens the app in a
-  browser window
-- [ ] Add options to CLI script to specify where to look for images
-- [ ] Modify app to search for images and all into memory
+- [ ] Modify app to load filenames from sys.args and read metadata into memory
 - [ ] Research and decide on ELO algo
 - [ ] Research and decide upon metadata format
 - [ ] Document metadata format
@@ -44,6 +40,14 @@ Matchmaking system for quickly ranking huge collections of images.
   time
 - [ ] Modify app display images in a form which can be submitted by selecting one
 - [ ] Modify app to calculate ranks and write to image metadata
+
+### Improve MVP
+
+- [ ] Add CLI script (using
+  [Click](https://www.palletsprojects.com/p/click/)) that opens the app in a
+  browser window automatically
+- [ ] Add options to CLI script to control how images are loaded (passed in via
+  STDIN, arguments, or implement our file search)
 
 ### Project setup
 
@@ -71,7 +75,11 @@ Matchmaking system for quickly ranking huge collections of images.
 
 ### Match enhancements
 
-- [ ] Add options to CLI script to specify how many images to put in a match
+- [ ] Add options to specify how many images to put in a match
+- [ ] Add options to convert rank to standard five-star rating metadata
+  (logarithmic?) so files can be sorted in other apps
+- [ ] Add options to write metadata to filename (append) so files can be sorted
+  in file manager
 
 ### Interface enchainments
 
