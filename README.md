@@ -1,11 +1,8 @@
-================
-Image Matchmaker
-================
+# Image Matchmaker
 
 Matchmaking system for quickly ranking huge collections of images.
 
-High-level goals
-================
+## High-level goals
 
 - Uses simple Python web app framework (flask?)
 - Runs from the commandline and is given paths to find images
@@ -25,11 +22,10 @@ High-level goals
   Image zoom plugins)
 - App should be able to be run on a server as a long-running app
 
-Initial milestones
-==================
+## Initial milestones
 
-MVP
----
+### MVP
+
 
 - [ ] Research and pick Python web app framework
 - [ ] Write initial hello world app
@@ -46,8 +42,7 @@ MVP
 - [ ] Modify app display images in a form which can be submitted by selecting one
 - [ ] Modify app to calculate ranks and write to image metadata
 
-Project setup
--------------
+### Project setup
 
 - [ ] Write initial Travis CI tests
 - [ ] Research functional testing frameworks and implement initial tests
@@ -60,45 +55,37 @@ Project setup
 - [ ] Set up PyPI package
 - [ ] Develop release process
 
-Chrome extensions compatibility
--------------------------------
+### Chrome extensions compatibility
 
 - [ ] Test interface for compatibility with relevant Chrome browser extensions
   (e.g., image zoom extensions)
-- Modify interface to improve compatibility
+- [ ] Modify interface to improve compatibility
 
-Speed improvements
-------------------
+### Speed improvements
 
 - [ ] Add options to cli script to intermittently load small random batches of
   images to speed things up with large collections
 
-Match enhancements
-------------------
+### Match enhancements
 
 - [ ] Add options to cli script to specify how many images to put in a match
 
-Interface enchainments
-----------------------
+### Interface enchainments
 
 TBD
 
-Design enhancements
--------------------
+### Design enhancements
 
 TBD
 
-Cross-browser compatibility
----------------------------
+### Cross-browser compatibility
 
 TBD
 
-Accessibility
--------------
+### Accessibility
 
 TBD
 
-Hosted version
---------------
+### Hosted version
 
 TBD
