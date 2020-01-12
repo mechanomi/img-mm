@@ -7,12 +7,21 @@ body {
 }
 
 img {
-    width: 45%;
-    margin: 2%;
+  width: 45%;
+  margin: 2%;
+  cursor: hand;
 }
 
 </style>
 
-{% for file in files %}
-  <img src="img?filename={{ file["filename"] }}">
-{% endfor %}
+  <form>
+  <input type="hidden" name="win" value="{{ files[0]['filename'] }}">
+  <input type="hidden" name="lose" value="{{ files[1]['filename'] }}">
+  <img src="img?filename={{ files[0]['filename'] }}" onclick="submit()">
+
+
+  <form>
+  <input type="hidden" name="win" value="{{ files[1]['filename'] }}">
+  <input type="hidden" name="lose" value="{{ files[0]['filename'] }}">
+  <img src="img?filename={{ files[1]['filename'] }}" onclick="submit()">
+
