@@ -28,9 +28,9 @@ Matchmaking system for quickly ranking huge collections of images.
 
 
 - [x] Research and pick Python web app framework
-- [x] Write initial hello world app
-- [ ] Add cli script that opens the app in a browser window
-- [ ] Add options to cli script to specify where to look for images
+- [x] Write initial "Hello world!" app
+- [ ] Add CLI script that opens the app in a browser window
+- [ ] Add options to CLI script to specify where to look for images
 - [ ] Modify app to search for images and all into memory
 - [ ] Research and decide on ELO algo
 - [ ] Research and decide upon metadata format
@@ -63,12 +63,12 @@ Matchmaking system for quickly ranking huge collections of images.
 
 ### Speed improvements
 
-- [ ] Add options to cli script to intermittently load small random batches of
+- [ ] Add options to CLI script to intermittently load small random batches of
   images to speed things up with large collections
 
 ### Match enhancements
 
-- [ ] Add options to cli script to specify how many images to put in a match
+- [ ] Add options to CLI script to specify how many images to put in a match
 
 ### Interface enchainments
 
