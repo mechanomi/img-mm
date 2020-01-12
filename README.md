@@ -28,8 +28,11 @@ Matchmaking system for quickly ranking huge collections of images.
 
 
 - [x] Research and pick Python web app framework
-- [x] Write initial "Hello world!" app
-- [ ] Add CLI script that opens the app in a browser window
+- [x] Write initial "Hello world!"
+  [Flask](https://www.palletsprojects.com/p/flask/) app
+- [ ] Add CLI script (using
+  [Click](https://www.palletsprojects.com/p/click/)) that opens the app in a
+  browser window
 - [ ] Add options to CLI script to specify where to look for images
 - [ ] Modify app to search for images and all into memory
 - [ ] Research and decide on ELO algo
