@@ -44,9 +44,9 @@ Matchmaking system for quickly ranking huge collections of images.
 
 ### Improve MVP
 
-- [ ] Add CLI script (using
-  [Click](https://www.palletsprojects.com/p/click/)) that opens the app in a
-  browser window automatically
+- [ ] Modify CLI script to use
+  [Click](https://www.palletsprojects.com/p/click/))
+- [ ] Add browser auto-reloading when source files change
 - [ ] Add options to CLI script to control how images are loaded (passed in via
   STDIN, arguments, or implement our file search)
 
