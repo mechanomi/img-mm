@@ -15,12 +15,12 @@ img {
 </style>
 
   <form>
-  <input type="hidden" name="win" value="{{ files[0]['filename'] }}">
-  <input type="hidden" name="lose" value="{{ files[1]['filename'] }}">
-  <img src="img?filename={{ files[0]['filename'] }}" title="{{ files[0]['rank'] }}" onclick="submit()" >
+  <input type="hidden" name="win" value="{{ candidates[0]['filename'] }}">
+  <input type="hidden" name="lose" value="{{ candidates[1]['filename'] }}">
+  <img src="img?filename={{ candidates[0]['filename'] }}" title="{{ candidates[0]['rank'] }}, {{ candidates[0]['rating'].sigma }}" onclick="submit()" >
 
 
   <form>
-  <input type="hidden" name="win" value="{{ files[1]['filename'] }}">
-  <input type="hidden" name="lose" value="{{ files[0]['filename'] }}">
-  <img src="img?filename={{ files[1]['filename'] }}" title="{{ files[1]['rank'] }}" onclick="submit()">
+  <input type="hidden" name="win" value="{{ candidates[1]['filename'] }}">
+  <input type="hidden" name="lose" value="{{ candidates[0]['filename'] }}">
+  <img src="img?filename={{ candidates[1]['filename'] }}" title="{{ candidates[1]['rank'] }}, {{ candidates[0]['rating'].sigma }}" onclick="submit()">

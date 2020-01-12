@@ -43,9 +43,8 @@ Matchmaking system for quickly ranking huge collections of images.
 
 ### Improve MVP
 
-- [ ] Modify app to select images with a preference for images with no existing
-  metadata, and then images that had not been modified for a longer amount of
-  time
+- [X] Modify app to select images with a preference for images with lowest
+  sigma
 - [ ] Modify CLI script to use
   [Click](https://www.palletsprojects.com/p/click/))
 - [ ] Add browser auto-reloading when source files change

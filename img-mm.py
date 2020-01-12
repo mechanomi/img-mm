@@ -34,13 +34,7 @@ SUPPORTED_EXTS = [
     ".webp",
 ]
 
-filenames = sys.argv[1:]
-eligible_filenames = set()
-for filename in filenames:
-    filename_ext = pathlib.Path(filename).suffix.lower()
-    if filename_ext not in SUPPORTED_EXTS:
-        continue
-    eligible_filenames.add(filename)
+eligible_files = []
 
 def rank(rating):
     return str(50 - round(rating.mu - (3 * rating.sigma)))
@@ -79,8 +73,9 @@ def update_file(filename, rating):
     new_name = "%sR %s" % (rank(rating), suffix)
     new_filename = str(path.parent.joinpath(new_name))
     shutil.move(filename, new_filename)
-    eligible_filenames.discard(filename)
-    eligible_filenames.add(new_filename)
+    for i, file in enumerate(eligible_files):
+        if file["filename"] == quote(filename):
+            eligible_files[i] = get_file(new_filename)
 
 def update_rankings(win, lose):
     win_file = get_file(win)
@@ -96,6 +91,40 @@ def update_rankings(win, lose):
     update_file(win_file["filename"], win_rating)
     update_file(lose_file["filename"], lose_rating)
 
+def load():
+    try:
+        dir = sys.argv[1]
+    except IndexError:
+        print("You must specify a directory!")
+        sys.exit(1)
+    filenames = list(pathlib.Path(dir).rglob("*"))
+    if len(filenames) < 2:
+        print("Did not find images!")
+        sys.exit(1)
+    for filename in filenames:
+        ext = filename.suffix.lower()
+        if ext not in SUPPORTED_EXTS:
+            continue
+        print("Loading: %s" % filename)
+        eligible_files.append(get_file(str(filename)))
+
+def get_candidates():
+    candidates = []
+    for file_dict in eligible_files:
+        if len(candidates) == 0:
+            candidates.append(file_dict)
+            continue
+        if len(candidates) == 1:
+            candidates.append(file_dict)
+            continue
+        if file_dict['rating'].sigma > candidates[0]['rating'].sigma:
+            candidates[0] = file_dict
+            continue
+        if file_dict['rating'].sigma > candidates[1]['rating'].sigma:
+            candidates[1] = file_dict
+            continue
+    return candidates
+
 @app.route('/img')
 def img():
     filename = request.args.get('filename')
@@ -109,16 +138,13 @@ def index():
     lose = request.args.get('lose')
     if win is not None and lose is not None:
         update_rankings(unquote(win), unquote(lose))
-    match_filenames = random.sample(eligible_filenames, 2)
     context = {
-        "files": [
-            get_file(match_filenames[0]),
-            get_file(match_filenames[1])
-        ]
+        "candidates": get_candidates()
     }
     return flask.render_template(TEMPLATE, **context)
 
 if __name__ == '__main__':
+    load()
     # Prevent multiple browser windows being opened because of code reloading
     # when Flask debug is active
     if 'WERKZEUG_RUN_MAIN' not in os.environ:

@@ -2,5 +2,4 @@
 
 export FLASK_ENV=development
 
-find /tmp/img-mm-samples -print0 | xargs -0 $BIN/python img-mm.py
-
+$BIN/python img-mm.py "$1"
