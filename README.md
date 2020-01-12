@@ -33,17 +33,17 @@ Matchmaking system for quickly ranking huge collections of images.
 - [x] Add script auto-reloading when source files change
 - [x] Modify app to load filenames from sys.argv and read metadata into memory
 - [x] Research and decide on ELO algo
-- [ ] Research and decide upon metadata format
-- [ ] Document metadata format
-- [ ] Modify app to read metadata
-- [ ] Modify app to select images with a preference for images with no existing
-  metadata, and then images that had not been modified for a longer amount of
-  time
-- [ ] Modify app display images in a form which can be submitted by selecting one
+- [X] Research and decide upon metadata format
+- [X] Modify app to read metadata
+- [ ] Modify app display images in a form which can be submitted by selecting
+  one
 - [ ] Modify app to calculate ranks and write to image metadata
 
 ### Improve MVP
 
+- [ ] Modify app to select images with a preference for images with no existing
+  metadata, and then images that had not been modified for a longer amount of
+  time
 - [ ] Modify CLI script to use
   [Click](https://www.palletsprojects.com/p/click/))
 - [ ] Add browser auto-reloading when source files change
