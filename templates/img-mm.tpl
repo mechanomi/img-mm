@@ -2,7 +2,7 @@
 
 body {
   background: url(img?filename=assets/bg.png);
-  margin: 0 0 0 1%;
+  margin: 0 0 1vh 1vh;
   padding: 0;
 }
 
@@ -13,19 +13,19 @@ form {
 div {
   display: inline;
   float: left;
-  width: 49%;
-  margin: 1% 1% 0 0;
+  max-width: 49vw;
+  margin: 1vh 1vh 0 0;
 }
 
 img {
   cursor: hand;
-  width: 100%;
+  max-height: 98vh;
+  max-width: 100%;
 }
 
 </style>
 
 <div>
-  {{ candidates[0]['rank'] }}, {{ candidates[0]['rating'].sigma }}<br>
   <form id="c1">
     <input type="hidden" name="win" value="{{ candidates[0]['filename'] }}">
     <input type="hidden" name="lose" value="{{ candidates[1]['filename'] }}">
@@ -34,7 +34,6 @@ img {
 </div>
 
 <div>
-  {{ candidates[1]['rank'] }}, {{ candidates[1]['rating'].sigma }}<br>
   <form id="c2">
     <input type="hidden" name="win" value="{{ candidates[1]['filename'] }}">
     <input type="hidden" name="lose" value="{{ candidates[0]['filename'] }}">
