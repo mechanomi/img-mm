@@ -114,20 +114,31 @@ def load():
         eligible_files.append(get_file(str(filename)))
 
 def get_candidates():
-    candidates = []
+    # Select the file with the lowest sigma (confidence) as the starting
+    # candidate
+    highest_sigma_file = None
     for file_dict in eligible_files:
-        if len(candidates) == 0:
-            candidates.append(file_dict)
+        if highest_sigma_file is None:
+            highest_sigma_file = file_dict
             continue
-        if len(candidates) == 1:
-            candidates.append(file_dict)
+        if file_dict['rating'].sigma > highest_sigma_file['rating'].sigma:
+            highest_sigma_file = file_dict
             continue
-        if file_dict['rating'].sigma > candidates[0]['rating'].sigma:
-            candidates[0] = file_dict
+    # Select the file which produces the best quality match
+    best_quality_file = None
+    best_quality = None
+    for file_dict in eligible_files:
+        if best_quality_file is None:
+            best_quality_file = file_dict
+            best_quality = trueskill.quality_1vs1(
+                highest_sigma_file['rating'], file_dict['rating'])
             continue
-        if file_dict['rating'].sigma > candidates[1]['rating'].sigma:
-            candidates[1] = file_dict
+        quality = trueskill.quality_1vs1(
+                highest_sigma_file['rating'], file_dict['rating'])
+        if quality > best_quality:
+            best_quality_file = file_dict
             continue
+    candidates = [highest_sigma_file, best_quality_file]
     return candidates
 
 @app.route('/img')
