@@ -134,6 +134,9 @@ def get_candidates():
     closest_mu_files = []
     lowest_mu_difference = None
     for file_dict in eligible_files:
+        # Don't pit an image against itself
+        if file_dict["filename"] == highest_sigma_file["filename"]:
+            continue
         mu_difference = abs(
             highest_sigma_file['rating'].mu - file_dict['rating'].mu)
         if len(closest_mu_files) == 0 or mu_difference == lowest_mu_difference:
