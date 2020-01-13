@@ -25,7 +25,8 @@ img {
 </style>
 
 <div>
-  <form id="c1" class="candidate">
+  {{ candidates[0]['rank'] }}, {{ candidates[0]['rating'].sigma }}<br>
+  <form>
     <input type="hidden" name="win" value="{{ candidates[0]['filename'] }}">
     <input type="hidden" name="lose" value="{{ candidates[1]['filename'] }}">
     <img src="img?filename={{ candidates[0]['filename'] }}" title="{{ candidates[0]['rank'] }}, {{ candidates[0]['rating'].sigma }}" onclick="submit()" >
@@ -33,7 +34,8 @@ img {
 </div>
 
 <div>
-  <form id="c2" class="candidate">
+  {{ candidates[1]['rank'] }}, {{ candidates[1]['rating'].sigma }}<br>
+  <form>
     <input type="hidden" name="win" value="{{ candidates[1]['filename'] }}">
     <input type="hidden" name="lose" value="{{ candidates[0]['filename'] }}">
     <img src="img?filename={{ candidates[1]['filename'] }}" title="{{ candidates[1]['rank'] }}, {{ candidates[0]['rating'].sigma }}" onclick="submit()">

@@ -47,7 +47,7 @@ Matchmaking system for quickly ranking huge collections of images.
 - [X] Fix image display vertical alignment
 - [X] Modify app to select images with a preference for images with highest
   sigma
-- [X] Pick highest sigma, then pick best quality match
+- [X] Pick highest sigma, then randomly from the closest mu values
 - [ ] Modify CLI script to use
   [Click](https://www.palletsprojects.com/p/click/))
 - [ ] Add browser auto-reloading when source files change

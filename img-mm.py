@@ -22,6 +22,7 @@ from pprint import pprint, pformat
 app = flask.Flask(__name__)
 
 APP_URL = 'http://127.0.0.1:5000/'
+RANK_MULTIPLIER = 1000
 TEMPLATE = "img-mm.tpl"
 MU_XATTR = "ts.mu"
 SIGMA_XATTR = "ts.sigma"
@@ -37,7 +38,12 @@ SUPPORTED_EXTS = [
 eligible_files = []
 
 def rank(rating):
-    return str(50 - round(rating.mu - (3 * rating.sigma)))
+    rank = str(
+        (50 * RANK_MULTIPLIER) - round(
+            (rating.mu - (3 * rating.sigma)) * RANK_MULTIPLIER
+        )
+    )
+    return rank
 
 def get_file(filename):
     file_xattr = xattr.xattr(filename)
@@ -69,7 +75,7 @@ def update_file(filename, rating):
     file_xattr.set(MU_XATTR, str(rating.mu).encode('UTF8'))
     file_xattr.set(SIGMA_XATTR, str(rating.sigma).encode('UTF8'))
     path = pathlib.PurePath(filename)
-    suffix = re.split('^(\d\dR)\s+?', path.name)[-1]
+    suffix = re.split('^(\d+R)\s+?', path.name)[-1]
     new_name = "%sR %s" % (rank(rating), suffix)
     new_filename = str(path.parent.joinpath(new_name))
     shutil.move(filename, new_filename)
@@ -124,21 +130,21 @@ def get_candidates():
         if file_dict['rating'].sigma > highest_sigma_file['rating'].sigma:
             highest_sigma_file = file_dict
             continue
-    # Select the file which produces the best quality match
-    best_quality_file = None
-    best_quality = None
+    # Select the file with the closest rank
+    closest_mu_files = []
+    lowest_mu_difference = None
     for file_dict in eligible_files:
-        if best_quality_file is None:
-            best_quality_file = file_dict
-            best_quality = trueskill.quality_1vs1(
-                highest_sigma_file['rating'], file_dict['rating'])
+        mu_difference = abs(
+            highest_sigma_file['rating'].mu - file_dict['rating'].mu)
+        if len(closest_mu_files) == 0 or mu_difference == lowest_mu_difference:
+            closest_mu_files.append(file_dict)
+            lowest_mu_difference = mu_difference
             continue
-        quality = trueskill.quality_1vs1(
-                highest_sigma_file['rating'], file_dict['rating'])
-        if quality > best_quality:
-            best_quality_file = file_dict
+        if mu_difference < lowest_mu_difference:
+            closest_mu_files = [file_dict]
+            lowest_mu_difference = mu_difference
             continue
-    candidates = [highest_sigma_file, best_quality_file]
+    candidates = [highest_sigma_file, random.choice(closest_mu_files)]
     return candidates
 
 @app.route('/img')
