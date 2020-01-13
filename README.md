@@ -4,12 +4,13 @@ Matchmaking system for quickly ranking huge collections of images.
 
 ## High-level goals
 
-- [x] Uses simple Python web app framework (Flask?)
-- [X] Runs from the commandline and is given paths to find images
+- [x] Uses simple Python web app framework
+- [X] Runs from the command line and is given paths to find images
 - [X] Launches app in browser
-- [X] Displays multiple (default: two) photos
+- [X] Displays multiple photos
+- [ ] Work with more than two photos
 - [X] Prioritize the ranking of images with least confidence
-- [X] Photos are now in a match. you click the winner
+- [X] Photos are now in a match and you select the winner
 - [X] App uses ELO type algo to determine new ranks
 - [X] Ranks written to file metadata
 - [ ] Document format so other apps can work with it
@@ -18,7 +19,7 @@ Matchmaking system for quickly ranking huge collections of images.
 - [X] App should be as responsive as possible to aid speed of use
 - [X] You can quit any time while playing
 - [ ] Compatibility with as many browser plugins as possible is desirable (e.g.,
-  Image zoom plugins)
+  image zoom plugins)
 - [ ] App should be able to be run on a server as a long-running app
 
 ## Initial milestones
@@ -30,7 +31,7 @@ Matchmaking system for quickly ranking huge collections of images.
 - [x] Write initial "Hello world!"
   [Flask](https://www.palletsprojects.com/p/flask/) app
 - [x] Add script auto-reloading when source files change
-- [x] Modify app to load filenames from sys.argv and read metadata into memory
+- [x] Modify app to load filenames from `sys.argv` and read metadata into memory
 - [x] Research and decide on ELO algo
 - [X] Research and decide upon metadata format
 - [X] Modify app to read metadata
@@ -42,6 +43,8 @@ Matchmaking system for quickly ranking huge collections of images.
 
 ### Improve MVP
 
+- [ ] Reload files if file error happens
+- [ ] Fix image display vertical alignment
 - [X] Modify app to select images with a preference for images with lowest
   sigma
 - [ ] Modify CLI script to use
