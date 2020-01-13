@@ -43,8 +43,8 @@ Matchmaking system for quickly ranking huge collections of images.
 
 ### Improve MVP
 
-- [ ] Reload files if file error happens
-- [ ] Fix image display vertical alignment
+- [X] Handle missing files on reload
+- [X] Fix image display vertical alignment
 - [X] Modify app to select images with a preference for images with lowest
   sigma
 - [ ] Modify CLI script to use

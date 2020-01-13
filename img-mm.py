@@ -78,8 +78,13 @@ def update_file(filename, rating):
             eligible_files[i] = get_file(new_filename)
 
 def update_rankings(win, lose):
-    win_file = get_file(win)
-    lose_file = get_file(lose)
+    try:
+        win_file = get_file(win)
+        lose_file = get_file(lose)
+    except FileNotFoundError:
+        # File has gone. User might have refreshed page after file was renamed.
+        # Either way, no way to recover, so take no action.
+        return
     win_rating, lose_rating = \
         trueskill.rate_1vs1(win_file["rating"], lose_file["rating"])
     print("Before:")
