@@ -69,7 +69,7 @@ def get_file(filename):
         "rank": rank(rating)
     }
 
-def update_file(filename, rating):
+def update_file(filename, rating, rm=False):
     filename = unquote(filename)
     file_xattr = xattr.xattr(filename)
     file_xattr.set(MU_XATTR, str(rating.mu).encode('UTF8'))
@@ -77,15 +77,22 @@ def update_file(filename, rating):
     path = pathlib.PurePath(filename)
     suffix = re.split('^(\d+R)\s+?', path.name)[-1]
     new_name = "%sR %s" % (rank(rating), suffix)
-    new_filename = str(path.parent.joinpath(new_name))
+    if not rm:
+        new_filename = str(path.parent.joinpath(new_name))
+    else:
+        path = pathlib.PurePath("/tmp")
+        new_filename = str(path.joinpath(new_name))
     shutil.move(filename, new_filename)
     new_file = get_file(new_filename)
     for i, file in enumerate(eligible_files):
         if file["filename"] == quote(filename):
-            eligible_files[i] = new_file
+            if not rm:
+                eligible_files[i] = new_file
+            else:
+                del(eligible_files[i])
     return new_file
 
-def update_rankings(win, lose):
+def update_rankings(win, lose, rm=False):
     try:
         win_file = get_file(win)
         lose_file = get_file(lose)
@@ -101,10 +108,13 @@ def update_rankings(win, lose):
     print("After:")
     print("  Win:  " + rank(win_rating) + " " + win_file["filename"])
     print("  Lose: " + rank(lose_rating) + " " + lose_file["filename"])
-    results = {
-        "win": update_file(win_file["filename"], win_rating),
-        "lose": update_file(lose_file["filename"], lose_rating)
-    }
+    win_file = update_file(win_file["filename"], win_rating)
+    lose_file = update_file(lose_file["filename"], lose_rating, rm)
+    if not rm:
+        results = {"win": win_file, "lose": lose_file}
+    else:
+        results = {"win": win_file, "rm": lose_file}
+    pprint(results)
     return results
 
 def load():
@@ -166,9 +176,13 @@ def img():
 def index():
     win = request.args.get('win')
     lose = request.args.get('lose')
+    rm = request.args.get('rm')
     results = None
-    if win is not None and lose is not None:
-        results = update_rankings(unquote(win), unquote(lose))
+    if win is not None:
+        if lose is not None:
+            results = update_rankings(unquote(win), unquote(lose))
+        if rm is not None:
+            results = update_rankings(unquote(win), unquote(rm), rm=True)
     context = {
         "results": results,
         "candidates": get_candidates()
