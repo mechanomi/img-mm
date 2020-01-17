@@ -83,7 +83,7 @@ img {
     <br><br>
     <input type="submit" value="WIN">
   </form>
-  <form id="c0-delete">
+  <form id="c0-rm">
     <input type="hidden" name="win" value="{{ candidates[1]['filename'] }}">
     <input type="hidden" name="rm" value="{{ candidates[0]['filename'] }}">
     <input type="submit" value="REMOVE">
@@ -98,7 +98,7 @@ img {
     <br><br>
     <input type="submit" value="WIN">
   </form>
-  <form id="c1-delete">
+  <form id="c1-rm">
     <input type="hidden" name="win" value="{{ candidates[0]['filename'] }}">
     <input type="hidden" name="rm" value="{{ candidates[1]['filename'] }}">
     <input type="submit" value="REMOVE">
@@ -112,12 +112,20 @@ img {
 $(document).keydown(function(e) {
     // Left arrow key
     if (e.which == 37) {
-        $("#c0").submit();
+        if (e.shiftKey) {
+            $("#c1-rm").submit();
+        } else {
+            $("#c0-win").submit();
+        }
         e.preventDefault();
     }
     // Right arrow key
     if (e.which == 39) {
-        $("#c1").submit();
+        if (e.shiftKey) {
+            $("#c0-rm").submit();
+        } else {
+            $("#c1-win").submit();
+        }
         e.preventDefault();
     }
 })

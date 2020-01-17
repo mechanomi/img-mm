@@ -52,6 +52,7 @@ Matchmaking system for quickly ranking huge collections of images.
 - [X] Don't pit an image against itself
 - [X] Improve CSS so images auto-fit viewport
 - [X] Implement delete functionality
+- [x] Add shortcuts for delete
 - [ ] Randomize lowest sigma selection
 - [X] Implement result action summary thumbnails
 - [ ] Modify CLI script to use
