@@ -8,10 +8,16 @@ body {
 
 form {
   margin: 0;
+  display: inline;
+}
+
+input {
+    font-size: 2em;
 }
 
 div {
   display: inline;
+  text-align: center;
   float: left;
   max-width: 49vw;
   margin: 1vh 1vh 0 0;
@@ -26,18 +32,32 @@ img {
 </style>
 
 <div>
-  <form id="c1">
+  <form id="c0-win">
     <input type="hidden" name="win" value="{{ candidates[0]['filename'] }}">
     <input type="hidden" name="lose" value="{{ candidates[1]['filename'] }}">
     <img src="img?filename={{ candidates[0]['filename'] }}" title="{{ candidates[0]['rank'] }}, {{ candidates[0]['rating'].sigma }}" onclick="submit()" >
+    <br><br>
+    <input type="submit" value="WIN">
+  </form>
+  <form id="c0-delete">
+    <input type="hidden" name="win" value="{{ candidates[1]['filename'] }}">
+    <input type="hidden" name="delete" value="{{ candidates[0]['filename'] }}">
+    <input type="submit" value="DELETE">
   </form>
 </div>
 
 <div>
-  <form id="c2">
+  <form id="c1-win">
     <input type="hidden" name="win" value="{{ candidates[1]['filename'] }}">
     <input type="hidden" name="lose" value="{{ candidates[0]['filename'] }}">
     <img src="img?filename={{ candidates[1]['filename'] }}" title="{{ candidates[1]['rank'] }}, {{ candidates[0]['rating'].sigma }}" onclick="submit()">
+    <br><br>
+    <input type="submit" value="WIN">
+  </form>
+  <form id="c1-delete">
+    <input type="hidden" name="win" value="{{ candidates[0]['filename'] }}">
+    <input type="hidden" name="delete" value="{{ candidates[1]['filename'] }}">
+    <input type="submit" value="DELETE">
   </form>
 </div>
 
@@ -48,12 +68,12 @@ img {
 $(document).keydown(function(e) {
     // Left arrow key
     if (e.which == 37) {
-        $("#c1").submit();
+        $("#c0").submit();
         e.preventDefault();
     }
     // Right arrow key
     if (e.which == 39) {
-        $("#c2").submit();
+        $("#c1").submit();
         e.preventDefault();
     }
 })
