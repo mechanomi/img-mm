@@ -79,9 +79,11 @@ def update_file(filename, rating):
     new_name = "%sR %s" % (rank(rating), suffix)
     new_filename = str(path.parent.joinpath(new_name))
     shutil.move(filename, new_filename)
+    new_file = get_file(new_filename)
     for i, file in enumerate(eligible_files):
         if file["filename"] == quote(filename):
-            eligible_files[i] = get_file(new_filename)
+            eligible_files[i] = new_file
+    return new_file
 
 def update_rankings(win, lose):
     try:
@@ -99,8 +101,11 @@ def update_rankings(win, lose):
     print("After:")
     print("  Win:  " + rank(win_rating) + " " + win_file["filename"])
     print("  Lose: " + rank(lose_rating) + " " + lose_file["filename"])
-    update_file(win_file["filename"], win_rating)
-    update_file(lose_file["filename"], lose_rating)
+    results = {
+        "win": update_file(win_file["filename"], win_rating),
+        "lose": update_file(lose_file["filename"], lose_rating)
+    }
+    return results
 
 def load():
     try:
@@ -116,7 +121,7 @@ def load():
         ext = filename.suffix.lower()
         if ext not in SUPPORTED_EXTS:
             continue
-        print("Loading: %s" % filename)
+        # print("Loading: %s" % filename)
         eligible_files.append(get_file(str(filename)))
 
 def get_candidates():
@@ -161,9 +166,11 @@ def img():
 def index():
     win = request.args.get('win')
     lose = request.args.get('lose')
+    results = None
     if win is not None and lose is not None:
-        update_rankings(unquote(win), unquote(lose))
+        results = update_rankings(unquote(win), unquote(lose))
     context = {
+        "results": results,
         "candidates": get_candidates()
     }
     return flask.render_template(TEMPLATE, **context)

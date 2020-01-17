@@ -1,14 +1,14 @@
 <style>
 
 body {
-  background: url(img?filename=assets/bg.png);
-  margin: 0 0 1vh 1vh;
-  padding: 0;
+    background: url(img?filename=assets/bg.png);
+    margin: 0 0 1vh 1vh;
+    padding: 0;
 }
 
 form {
-  margin: 0;
-  display: inline;
+    margin: 0;
+    display: inline;
 }
 
 input {
@@ -16,22 +16,54 @@ input {
 }
 
 div {
-  display: inline;
-  text-align: center;
-  float: left;
-  max-width: 49vw;
-  margin: 1vh 1vh 0 0;
+    display: inline;
+    text-align: center;
+    float: left;
+    max-width: 49vw;
+    margin: 1vh 1vh 0 0;
 }
 
 img {
-  cursor: hand;
-  max-height: 98vh;
-  max-width: 100%;
+    cursor: hand;
+    max-height: 98vh;
+    max-width: 100%;
+}
+
+.result img {
+     max-height: 8vh;
+    max-width: 100%;
+}
+
+#result-win {
+    background: green;
+    padding: 10px;
+}
+
+#result-lose {
+    background: white;
+    padding: 10px;
+}
+
+#candidate-0 {
+    clear: left;
 }
 
 </style>
 
-<div>
+{% if results %}
+
+
+<div class="result" id="result-win">
+  <img src="img?filename={{ results['win']['filename'] }}" title="{{ results['win']['rank'] }}, {{ results['win']['rating'].sigma }}" onclick="submit()" >
+</div>
+
+<div class="result" id="result-lose">
+  <img src="img?filename={{ results['lose']['filename'] }}" title="{{ results['lose']['rank'] }}, {{ results['lose']['rating'].sigma }}" onclick="submit()" >
+</div>
+
+{% endif %}
+
+<div class="candidate" id="candidate-0">
   <form id="c0-win">
     <input type="hidden" name="win" value="{{ candidates[0]['filename'] }}">
     <input type="hidden" name="lose" value="{{ candidates[1]['filename'] }}">
@@ -46,7 +78,7 @@ img {
   </form>
 </div>
 
-<div>
+<div class="candidate" id="candidate-1">
   <form id="c1-win">
     <input type="hidden" name="win" value="{{ candidates[1]['filename'] }}">
     <input type="hidden" name="lose" value="{{ candidates[0]['filename'] }}">
