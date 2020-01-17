@@ -51,6 +51,9 @@ Matchmaking system for quickly ranking huge collections of images.
 - [X] Bind left and right arrow to candidate submissions
 - [X] Don't pit an image against itself
 - [X] Improve CSS so images auto-fit viewport
+- [ ] Implement delete functionality
+- [ ] Randomize lowest sigma selection
+- [ ] Implement result action summary thumbnails
 - [ ] Modify CLI script to use
   [Click](https://www.palletsprojects.com/p/click/))
 - [ ] Add browser auto-reloading when source files change
