@@ -1,6 +1,7 @@
-SRC_DIR     := src
+TOP_DIR     := $(abspath $(dir $(lastword $(MAKEFILE_LIST))))
+SRC_DIR     := $(TOP_DIR)/src
 IMG_MM      := $(SRC_DIR)/img-mm.py
-VENV_DIR    := .venv
+VENV_DIR    := $(TOP_DIR)/.venv
 BIN_DIR     := $(VENV_DIR)/bin
 ACTIVATE    := $(BIN_DIR)/activate
 PYTHON      := python3.7
@@ -37,4 +38,5 @@ dev:
 	. $(ACTIVATE) && \
 	    $(PYTHON) -m pip install --upgrade -r requirements.txt
 	. $(ACTIVATE) && \
-	    FLASK_ENV=development $(PYTHON) $(IMG_MM) "$(DIR)"
+	    cd "$(DIR)" && \
+	    FLASK_ENV=development $(PYTHON) $(IMG_MM)

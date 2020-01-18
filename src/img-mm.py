@@ -37,9 +37,27 @@ SUPPORTED_EXTS = [
     ".webp",
 ]
 
-eligible_files = []
+cwd = pathlib.Path.cwd()
+tmp_path = pathlib.Path("/tmp")
 
-files_index = {}
+ALLOWED_PATHS = [cwd, tmp_path]
+
+eligible_imgs = []
+
+imgs_index = {}
+
+def get_img_path(img_filename):
+    allowed = False
+    img_path = pathlib.Path(img_filename).resolve()
+    for allowed_path in ALLOWED_PATHS:
+        try:
+            img_path.relative_to(allowed_path)
+            allowed = True
+        except ValueError:
+            continue
+    if not allowed:
+        raise Exception("Path not allowed.")
+    return img_path
 
 
 def rank(rating):
@@ -63,13 +81,14 @@ def set_xattr(filename, name, value):
     xattr.setxattr(filename, name, value.encode('UTF8'))
 
 
-def get_file(filename):
-    mu = get_xattr(filename, MU_XATTR)
-    sigma = get_xattr(filename, SIGMA_XATTR)
-    prev_mu = get_xattr(filename, PREV_MU_XATTR)
-    prev_sigma = get_xattr(filename, PREV_SIGMA_XATTR)
-    prev_index = get_xattr(filename, PREV_INDEX_XATTR)
-    prev_filename = get_xattr(filename, PREV_FILENAME_XATTR)
+def get_img(img_path):
+    img_filename = str(img_path)
+    mu = get_xattr(img_filename, MU_XATTR)
+    sigma = get_xattr(img_filename, SIGMA_XATTR)
+    prev_mu = get_xattr(img_filename, PREV_MU_XATTR)
+    prev_sigma = get_xattr(img_filename, PREV_SIGMA_XATTR)
+    prev_index = get_xattr(img_filename, PREV_INDEX_XATTR)
+    prev_filename = get_xattr(img_filename, PREV_FILENAME_XATTR)
     previous_rating = False
     if mu is not None or sigma is not None:
         previous_rating = True
@@ -77,8 +96,9 @@ def get_file(filename):
     else:
         rating = trueskill.Rating()
     return {
-        "filename": filename,
-        "mtime": os.path.getmtime(filename),
+        "path": img_path,
+        "filename": str(img_path),
+        "mtime": os.path.getmtime(img_filename),
         "previous_rating": previous_rating,
         "rating": rating,
         "prev_mu": prev_mu,
@@ -89,41 +109,39 @@ def get_file(filename):
     }
 
 
-def update_file(file_dict, rating, rm=False):
-    filename = file_dict["filename"]
-    print("Update from %s to %s" % (file_dict["rating"].mu, rating.mu))
-    # Save previous state
-    set_xattr(filename, PREV_MU_XATTR, str(file_dict["rating"].mu))
-    set_xattr(filename, PREV_SIGMA_XATTR, str(file_dict["rating"].sigma))
-    set_xattr(filename, PREV_INDEX_XATTR, str(files_index[filename]))
-    set_xattr(filename, PREV_FILENAME_XATTR, filename)
+def update_img(img_dict, rating, rm=False):
+    print("Update from %s to %s" % (img_dict["rating"].mu, rating.mu))
+    # Save current state
+    set_xattr(img_dict["filename"], PREV_MU_XATTR, str(img_dict["rating"].mu))
+    set_xattr(img_dict["filename"], PREV_SIGMA_XATTR, str(img_dict["rating"].sigma))
+    set_xattr(img_dict["filename"], PREV_INDEX_XATTR, str(imgs_index[img_dict["filename"]]))
+    set_xattr(img_dict["filename"], PREV_FILENAME_XATTR, img_dict["filename"])
     # Update state
-    set_xattr(filename, MU_XATTR, str(rating.mu))
-    set_xattr(filename, SIGMA_XATTR, str(rating.sigma))
-    path = pathlib.PurePath(filename)
-    suffix = re.split(r'^(\d+R)\s+?', path.name)[-1]
+    set_xattr(img_dict["filename"], MU_XATTR, str(rating.mu))
+    set_xattr(img_dict["filename"], SIGMA_XATTR, str(rating.sigma))
+    suffix = re.split(r'^(\d+R)\s+?', img_dict["path"].name)[-1]
     new_name = "%sR %s" % (rank(rating), suffix)
     if not rm:
-        new_filename = str(path.parent.joinpath(new_name))
+        new_filename = str(img_dict["path"].parent.joinpath(new_name))
     else:
-        path = pathlib.PurePath("/tmp")
-        new_filename = str(path.joinpath(new_name))
-    shutil.move(filename, new_filename)
-    new_file = get_file(new_filename)
-    for i, file in enumerate(eligible_files):
-        if file["filename"] == filename:
+        tmp_path = pathlib.PurePath("/tmp")
+        new_filename = str(tmp_path.joinpath(new_name))
+    shutil.move(img_dict["filename"], new_filename)
+    new_file = get_img(new_filename)
+    for i, img in enumerate(eligible_imgs):
+        if img["filename"] == img_dict["filename"]:
             if not rm:
-                eligible_files[i] = new_file
+                eligible_imgs[i] = new_file
             else:
-                del(eligible_files[i])
+                del(eligible_imgs[i])
     return new_file
 
 
 def handle_match(win, lose, rm=False):
     pprint(("handle_match", win, lose, rm))
     try:
-        win_file = get_file(win)
-        lose_file = get_file(lose)
+        win_file = get_img(win)
+        lose_file = get_img(lose)
     except FileNotFoundError:
         # File has gone. User might have refreshed page after file was renamed.
         # Either way, no way to recover, so take no action.
@@ -136,8 +154,8 @@ def handle_match(win, lose, rm=False):
     print("After:")
     print("  Win:  " + rank(win_rating) + " " + win_file["filename"])
     print("  Lose: " + rank(lose_rating) + " " + lose_file["filename"])
-    win_file = update_file(win_file, win_rating)
-    lose_file = update_file(lose_file, lose_rating, rm)
+    win_file = update_img(win_file, win_rating)
+    lose_file = update_img(lose_file, lose_rating, rm)
     if not rm:
         results = {"win": win_file, "lose": lose_file}
     else:
@@ -146,102 +164,108 @@ def handle_match(win, lose, rm=False):
     return results
 
 
-def undo_update_file(filename, rm=False):
+def undo_update_img(img_dict, rm=False):
     # Get previous state
-    prev_mu = get_xattr(filename, PREV_MU_XATTR)
-    prev_sigma = get_xattr(filename, PREV_SIGMA_XATTR)
-    prev_index = get_xattr(filename, PREV_INDEX_XATTR)
-    prev_filename = get_xattr(filename, PREV_FILENAME_XATTR)
+    prev_mu = get_xattr(img_dict["filename"], PREV_MU_XATTR)
+    prev_sigma = get_xattr(img_dict["filename"], PREV_SIGMA_XATTR)
+    prev_index = get_xattr(img_dict["filename"], PREV_INDEX_XATTR)
+    prev_filename = get_xattr(img_dict["filename"], PREV_FILENAME_XATTR)
     print("Prev mu: %s" % prev_mu)
     print("Prev sigma: %s" % prev_sigma)
     print("Prev filename: %s" % prev_filename)
     # Restore previous state
-    set_xattr(filename, MU_XATTR, prev_mu)
-    set_xattr(filename, SIGMA_XATTR, prev_sigma)
-    shutil.move(filename, prev_filename)
-    prev_file = get_file(prev_filename)
+    set_xattr(img_dict["filename"], MU_XATTR, prev_mu)
+    set_xattr(img_dict["filename"], SIGMA_XATTR, prev_sigma)
+    shutil.move(img_dict["filename"], prev_filename)
+    prev_img = get_img(prev_filename)
     if rm:
-        eligible_files.insert(int(prev_index), prev_file)
+        eligible_imgs.insert(int(prev_index), prev_file)
     else:
-        for i, file in enumerate(eligible_files):
-            if file["filename"] == filename:
-                eligible_files[i] = prev_file
+        for i, img in enumerate(eligible_imgs):
+            if img["filename"] == img_dict["filename"]:
+                eligible_imgs[i] = prev_img
     return prev_filename
 
 
 def handle_undo(win, lose, rm=False):
     pprint(("handle_undo", win, lose))
-    win = undo_update_file(win, rm)
-    lose = undo_update_file(lose, rm)
+    try:
+        win_dict = get_img(win)
+        lose_dict = get_img(lose)
+    except FileNotFoundError:
+        # File has gone. User might have refreshed page after file was renamed.
+        # Either way, no way to recover, so take no action.
+        return
+    win = undo_update_img(win_dict, rm)
+    lose = undo_update_img(lose_dict, rm)
     if not rm:
-        undo = {"win": get_file(win), "lose": get_file(lose)}
+        undo = {"win": get_img(win), "lose": get_img(lose)}
     else:
-        undo = {"win": get_file(win), "rm": get_file(lose)}
+        undo = {"win": get_img(win), "rm": get_img(lose)}
     pprint(undo)
     return undo
 
 
-def load():
-    try:
-        dir = sys.argv[1]
-    except IndexError:
-        print("You must specify a directory!")
-        sys.exit(1)
-    filenames = list(pathlib.Path(dir).rglob("*"))
-    if len(filenames) < 2:
+def load_imgs():
+    img_filenames = list(cwd.rglob("*"))
+    if len(img_filenames) < 2:
         print("Did not find images!")
         sys.exit(1)
-    for filename in filenames:
-        ext = filename.suffix.lower()
+    for img_filename in img_filenames:
+        ext = img_filename.suffix.lower()
         if ext not in SUPPORTED_EXTS:
             continue
-        filename = str(filename)
+        img_filename = str(img_filename)
         # print("Loading: %s" % filename)
-        index = len(eligible_files)
-        files_index[filename] = index
-        eligible_files.append(get_file(filename))
+        index = len(eligible_imgs)
+        imgs_index[img_filename] = index
+        eligible_imgs.append(get_img(img_filename))
 
 
 def get_candidates():
     # Select the file with the lowest sigma (confidence) as the starting
     # candidate
     highest_sigma_file = None
-    for file_dict in eligible_files:
+    for img_dict in eligible_imgs:
         if highest_sigma_file is None:
-            highest_sigma_file = file_dict
+            highest_sigma_file = img_dict
             continue
-        if file_dict['rating'].sigma > highest_sigma_file['rating'].sigma:
-            highest_sigma_file = file_dict
+        if img_dict['rating'].sigma > highest_sigma_file['rating'].sigma:
+            highest_sigma_file = img_dict
             continue
     # Select the file with the closest rank
     closest_mu_file = None
     lowest_mu_difference = None
-    for file_dict in eligible_files:
+    for img_dict in eligible_imgs:
         # Don't pit an image against itself
-        if file_dict["filename"] == highest_sigma_file["filename"]:
+        if img_dict["filename"] == highest_sigma_file["filename"]:
             continue
         mu_difference = abs(
-            highest_sigma_file['rating'].mu - file_dict['rating'].mu)
+            highest_sigma_file['rating'].mu - img_dict['rating'].mu)
         if closest_mu_file is None or mu_difference < lowest_mu_difference:
-            closest_mu_file = file_dict
+            closest_mu_file = img_dict
             lowest_mu_difference = mu_difference
             continue
     candidates = [highest_sigma_file, closest_mu_file]
     return candidates
 
 
-def get_unquote(param):
-    value = request.args.get(param)
-    if value is not None:
-        value = unquote(value)
-    return value
+def get_arg_img_path(param):
+    img_filename = request.args.get(param)
+    if not img_filename:
+        return None
+    img_path = get_img_path(unquote(img_filename))
+    return img_path
 
 
 @app.route('/img')
 def img():
-    filename = get_unquote('filename')
-    img_file = open(filename, "rb")
-    mimetype = mimetypes.guess_type(filename)[0]
+    img_path = get_arg_img_path('filename')
+    if not img_path:
+        raise Exception("Not a valid path")
+    img_filename = str(img_path)
+    img_file = open(img_filename, "rb")
+    mimetype = mimetypes.guess_type(img_filename)[0]
     return flask.send_file(img_file, mimetype=mimetype)
 
 
@@ -249,9 +273,9 @@ def img():
 def index():
     undo = None
     results = None
-    unwin = get_unquote('unwin')
-    unlose = get_unquote('unlose')
-    unrm = get_unquote('unrm')
+    unwin = get_arg_img_path('unwin')
+    unlose = get_arg_img_path('unlose')
+    unrm = get_arg_img_path('unrm')
     if unwin is not None:
         # Undoing something takes preference
         if unlose is not None:
@@ -260,9 +284,9 @@ def index():
             undo = handle_undo(unwin, unrm, rm=True)
     else:
         # Not undoing anything
-        win = get_unquote('win')
-        lose = get_unquote('lose')
-        rm = get_unquote('rm')
+        win = get_arg_img_path('win')
+        lose = get_arg_img_path('lose')
+        rm = get_arg_img_path('rm')
         if win is not None:
             if lose is not None:
                 results = handle_match(win, lose)
@@ -277,7 +301,7 @@ def index():
 
 
 if __name__ == '__main__':
-    load()
+    load_imgs()
     # Prevent multiple browser windows being opened because of code reloading
     # when Flask debug is active
     if 'WERKZEUG_RUN_MAIN' not in os.environ:
