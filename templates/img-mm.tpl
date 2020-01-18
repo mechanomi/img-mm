@@ -29,8 +29,9 @@ img {
     max-width: 100%;
 }
 
-.result img {
-     max-height: 8vh;
+.result img,
+.undo img {
+    max-height: 8vh;
     max-width: 100%;
 }
 
@@ -49,29 +50,69 @@ img {
     padding: 10px;
 }
 
+.undo {
+    background: yellow;
+    padding: 10px;
+}
+
 #candidate-0 {
     clear: left;
 }
 
 </style>
 
+{% if undo %}
+
+  <form>
+
+    <div class="undo" id="undo-win">
+      <img src="img?filename={{ undo['win']['filename'] | urlencode }}" title="{{ undo['win']['rank'] }}, {{ undo['win']['rating'].sigma }}" onclick="submit()" >
+    </div>
+
+    {% if undo['lose'] %}
+      <div class="undo" id="undo-lose">
+        <img src="img?filename={{ undo['lose']['filename'] | urlencode }}" title="{{ undo['lose']['rank'] }}, {{ undo['lose']['rating'].sigma }}" onclick="submit()" >
+      </div>
+    {% endif %}
+
+    {% if undo['rm'] %}
+      <div class="undo" id="undo-rm">
+        <img src="img?filename={{ undo['rm']['filename'] }}" title="{{ undo['rm']['rank'] }}, {{ undo['rm']['rating'].sigma }}" onclick="submit()" >
+      </div>
+    {% endif %}
+
+  </form>
+
+{% endif %}
+
 {% if results %}
 
-  <div class="result" id="result-win">
-    <img src="img?filename={{ results['win']['filename'] }}" title="{{ results['win']['rank'] }}, {{ results['win']['rating'].sigma }}" onclick="submit()" >
-  </div>
+  <form>
 
-  {% if results['lose'] %}
-    <div class="result" id="result-lose">
-      <img src="img?filename={{ results['lose']['filename'] }}" title="{{ results['lose']['rank'] }}, {{ results['lose']['rating'].sigma }}" onclick="submit()" >
+    <div class="result" id="result-win">
+      <img src="img?filename={{ results['win']['filename'] | urlencode }}" title="{{ results['win']['rank'] }}, {{ results['win']['rating'].sigma }}" onclick="submit()" >
     </div>
-  {% endif %}
+    <input type="hidden" name="unwin" value="{{ results['win']['filename'] }}">
 
-  {% if results['rm'] %}
-    <div class="result" id="result-rm">
-      <img src="img?filename={{ results['rm']['filename'] }}" title="{{ results['rm']['rank'] }}, {{ results['rm']['rating'].sigma }}" onclick="submit()" >
-    </div>
-  {% endif %}
+    {% if results['lose'] %}
+      <div class="result" id="result-lose">
+        <img src="img?filename={{ results['lose']['filename'] | urlencode }}" title="{{ results['lose']['rank'] }}, {{ results['lose']['rating'].sigma }}" onclick="submit()" >
+      </div>
+      <input type="hidden" name="unlose" value="{{ results['lose']['filename'] }}">
+    {% endif %}
+
+    {% if results['rm'] %}
+      <div class="result" id="result-rm">
+        <img src="img?filename={{ results['rm']['filename'] }}" title="{{ results['rm']['rank'] }}, {{ results['rm']['rating'].sigma }}" onclick="submit()" >
+      </div>
+      <input type="hidden" name="unrm" value="{{ results['rm']['filename'] }}">
+    {% endif %}
+
+    <br>
+
+    <input type="submit" value="UNDO">
+
+  </form>
 
 {% endif %}
 
@@ -79,7 +120,7 @@ img {
   <form id="c0-win">
     <input type="hidden" name="win" value="{{ candidates[0]['filename'] }}">
     <input type="hidden" name="lose" value="{{ candidates[1]['filename'] }}">
-    <img src="img?filename={{ candidates[0]['filename'] }}" title="{{ candidates[0]['rank'] }}, {{ candidates[0]['rating'].sigma }}" onclick="submit()" >
+    <img src="img?filename={{ candidates[0]['filename'] | urlencode }}" title="{{ candidates[0]['rank'] }}, {{ candidates[0]['rating'].sigma }}" onclick="submit()" >
     <br><br>
     <input type="submit" value="WIN">
   </form>
@@ -94,7 +135,7 @@ img {
   <form id="c1-win">
     <input type="hidden" name="win" value="{{ candidates[1]['filename'] }}">
     <input type="hidden" name="lose" value="{{ candidates[0]['filename'] }}">
-    <img src="img?filename={{ candidates[1]['filename'] }}" title="{{ candidates[1]['rank'] }}, {{ candidates[0]['rating'].sigma }}" onclick="submit()">
+    <img src="img?filename={{ candidates[1]['filename'] | urlencode }}" title="{{ candidates[1]['rank'] }}, {{ candidates[0]['rating'].sigma }}" onclick="submit()">
     <br><br>
     <input type="submit" value="WIN">
   </form>

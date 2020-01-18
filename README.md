@@ -53,8 +53,9 @@ Matchmaking system for quickly ranking huge collections of images.
 - [X] Improve CSS so images auto-fit viewport
 - [X] Implement delete functionality
 - [X] Add shortcuts for delete
-- [ ] Randomize lowest sigma selection
+- [X] Implement undo functionality
 - [X] Implement result action summary thumbnails
+- [X] Remove randomization
 - [ ] Modify CLI script to use
   [Click](https://www.palletsprojects.com/p/click/))
 - [ ] Add browser auto-reloading when source files change
