@@ -24,7 +24,7 @@ $(FLAKE8): $(ACTIVATE)
 	    $(PYTHON) -m pip install --upgrade -r requirements-test.txt
 
 .PHONY: test
-test: $(FLAKE)
+test: $(FLAKE8)
 	. $(ACTIVATE) && \
 	    $(FLAKE8) $(SRC_DIR) $(FLAKE8_ARGS)
 
