@@ -57,6 +57,7 @@ Matchmaking system for quickly ranking huge collections of images.
 - [X] Implement result action summary thumbnails
 - [X] Remove randomization
 - [ ] Preserve correct thumbnail order
+- [ ] Fix restoration after undoing a delete
 - [ ] Modify CLI script to use
   [Click](https://www.palletsprojects.com/p/click/))
 - [ ] Add browser auto-reloading when source files change
