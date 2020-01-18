@@ -1,5 +1,0 @@
-. activate.sh
-
-export FLASK_ENV=development
-
-$BIN/python img-mm.py "$1"

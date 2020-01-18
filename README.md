@@ -76,6 +76,10 @@ Matchmaking system for quickly ranking huge collections of images.
 - [ ] Add top-level documentation
 - [ ] Set up PyPI package
 - [ ] Develop release process
+- [ ] Codecov setup
+- [ ] LGTM setup
+- [ ] snyk.io setup
+- [ ] pepy.tech setup
 
 ### Chrome extensions compatibility
 

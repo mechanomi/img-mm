@@ -1,7 +1,7 @@
 <style>
 
 body {
-    background: url(img?filename=assets/bg.png);
+    background: url(img?filename=src/assets/bg.png);
     margin: 0 0 1vh 1vh;
     padding: 0;
 }
