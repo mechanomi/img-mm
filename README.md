@@ -1,6 +1,6 @@
 # Image Matchmaker
 
-[![Travis CI status](https://img.shields.io/travis/mechanomi/img-mm/master.svg)](https://travis-ci.org/mechanomi/img-mm)
+[![Travis CI status](https://img.shields.io/travis/mechanomi/img-mm/master.svg)](https://travis-ci.org/mechanomi/img-mm) [![Total alerts](https://img.shields.io/lgtm/alerts/g/mechanomi/img-mm.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/mechanomi/img-mm/alerts/) [![Language grade: Python](https://img.shields.io/lgtm/grade/python/g/mechanomi/img-mm.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/mechanomi/img-mm/context:python)
 
 Matchmaking system for quickly ranking huge collections of images.
 
