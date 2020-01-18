@@ -22,7 +22,7 @@ Matchmaking system for quickly ranking huge collections of images.
 - [X] You can quit any time while playing
 - [ ] Compatibility with as many browser plugins as possible is desirable (e.g.,
   image zoom plugins)
-- [ ] App should be able to be run on a server as a long-running app
+- [ ] App should be able to be run like a regular OS app
 
 ## Initial milestones
 
@@ -59,7 +59,7 @@ Matchmaking system for quickly ranking huge collections of images.
 - [X] Implement result action summary thumbnails
 - [X] Remove randomization
 - [ ] Preserve correct thumbnail order
-- [ ] Fix restoration after undoing a delete
+- [X] Fix restoration after undoing a delete
 - [ ] Modify CLI script to use
   [Click](https://www.palletsprojects.com/p/click/))
 - [ ] Add browser auto-reloading when source files change
@@ -68,9 +68,9 @@ Matchmaking system for quickly ranking huge collections of images.
 
 ### Project setup
 
-- [ ] Write initial Travis CI tests
+- [X] Write initial Travis CI tests
 - [ ] Research functional testing frameworks and implement initial tests
-- [ ] Research code standard testing frameworks and implement initial tests
+- [X] Research code standard testing frameworks and implement initial tests
 - [ ] Create initial docs project infrastructure
 - [ ] Host docs on Read The Docs
 - [ ] Write the initial docs
@@ -79,7 +79,7 @@ Matchmaking system for quickly ranking huge collections of images.
 - [ ] Set up PyPI package
 - [ ] Develop release process
 - [ ] Codecov setup
-- [ ] LGTM setup
+- [X] LGTM setup
 - [ ] snyk.io setup
 - [ ] pepy.tech setup
 - [ ] enable other versions of Python (Travis CI)
