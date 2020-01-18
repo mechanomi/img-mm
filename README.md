@@ -1,5 +1,7 @@
 # Image Matchmaker
 
+[![Travis CI status](https://img.shields.io/travis/mechanomi/img-mm/master.svg)](https://travis-ci.org/mechanomi/img-mm)
+
 Matchmaking system for quickly ranking huge collections of images.
 
 ## High-level goals
@@ -80,6 +82,7 @@ Matchmaking system for quickly ranking huge collections of images.
 - [ ] LGTM setup
 - [ ] snyk.io setup
 - [ ] pepy.tech setup
+- [ ] enable other versions of Python (Travis CI)
 
 ### Chrome extensions compatibility
 
@@ -119,3 +122,4 @@ TBD
 ### Hosted version
 
 TBD
+

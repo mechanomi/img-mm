@@ -1,0 +1,15 @@
+osx: &osx
+  name: "Python 3.7"
+  language: generic
+  os: osx
+  osx_image: xcode10.2
+
+tests: &tests
+  stage: "Tests"
+  script:
+    - make test
+
+matrix:
+  include:
+    - <<: *tests
+      <<: *osx
