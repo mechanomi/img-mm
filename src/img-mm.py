@@ -29,7 +29,7 @@ PREV_SIGMA_XATTR = "img-mm.ts.sigma.prev"
 PREV_INDEX_XATTR = "img-mm.index.prev"
 PREV_FILENAME_XATTR = "img-mm.filename.prev"
 SUPPORTED_EXTS = [
-    ".bmp"
+    ".bmp",
     ".gif",
     ".jpeg",
     ".jpg",
