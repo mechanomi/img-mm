@@ -1,23 +1,21 @@
 import mimetypes
 import os
 import pathlib
-import random
 import re
 import shutil
 import sys
 import threading
-import urllib
 import webbrowser
 
 from flask import request
 
-from urllib.parse import unquote, quote
+from urllib.parse import unquote
 
 import flask
 import trueskill
 import xattr
 
-from pprint import pprint, pformat
+from pprint import pprint
 
 app = flask.Flask(__name__)
 
@@ -43,6 +41,7 @@ eligible_files = []
 
 files_index = {}
 
+
 def rank(rating):
     rank = str(
         (50 * RANK_MULTIPLIER) - round(
@@ -51,6 +50,7 @@ def rank(rating):
     )
     return rank
 
+
 def get_xattr(filename, name):
     try:
         value = xattr.getxattr(filename, name).decode("UTF8")
@@ -58,8 +58,10 @@ def get_xattr(filename, name):
         value = None
     return value
 
+
 def set_xattr(filename, name, value):
     xattr.setxattr(filename, name, value.encode('UTF8'))
+
 
 def get_file(filename):
     mu = get_xattr(filename, MU_XATTR)
@@ -86,6 +88,7 @@ def get_file(filename):
         "rank": rank(rating)
     }
 
+
 def update_file(file_dict, rating, rm=False):
     filename = file_dict["filename"]
     print("Update from %s to %s" % (file_dict["rating"].mu, rating.mu))
@@ -98,7 +101,7 @@ def update_file(file_dict, rating, rm=False):
     set_xattr(filename, MU_XATTR, str(rating.mu))
     set_xattr(filename, SIGMA_XATTR, str(rating.sigma))
     path = pathlib.PurePath(filename)
-    suffix = re.split('^(\d+R)\s+?', path.name)[-1]
+    suffix = re.split(r'^(\d+R)\s+?', path.name)[-1]
     new_name = "%sR %s" % (rank(rating), suffix)
     if not rm:
         new_filename = str(path.parent.joinpath(new_name))
@@ -114,6 +117,7 @@ def update_file(file_dict, rating, rm=False):
             else:
                 del(eligible_files[i])
     return new_file
+
 
 def handle_match(win, lose, rm=False):
     pprint(("handle_match", win, lose, rm))
@@ -141,6 +145,7 @@ def handle_match(win, lose, rm=False):
     pprint(results)
     return results
 
+
 def undo_update_file(filename, rm=False):
     # Get previous state
     prev_mu = get_xattr(filename, PREV_MU_XATTR)
@@ -163,6 +168,7 @@ def undo_update_file(filename, rm=False):
                 eligible_files[i] = prev_file
     return prev_filename
 
+
 def handle_undo(win, lose, rm=False):
     pprint(("handle_undo", win, lose))
     win = undo_update_file(win, rm)
@@ -173,6 +179,7 @@ def handle_undo(win, lose, rm=False):
         undo = {"win": get_file(win), "rm": get_file(lose)}
     pprint(undo)
     return undo
+
 
 def load():
     try:
@@ -193,6 +200,7 @@ def load():
         index = len(eligible_files)
         files_index[filename] = index
         eligible_files.append(get_file(filename))
+
 
 def get_candidates():
     # Select the file with the lowest sigma (confidence) as the starting
@@ -221,11 +229,13 @@ def get_candidates():
     candidates = [highest_sigma_file, closest_mu_file]
     return candidates
 
+
 def get_unquote(param):
     value = request.args.get(param)
     if value is not None:
         value = unquote(value)
     return value
+
 
 @app.route('/img')
 def img():
@@ -233,6 +243,7 @@ def img():
     img_file = open(filename, "rb")
     mimetype = mimetypes.guess_type(filename)[0]
     return flask.send_file(img_file, mimetype=mimetype)
+
 
 @app.route('/')
 def index():
@@ -264,6 +275,7 @@ def index():
     }
     return flask.render_template(TEMPLATE, **context)
 
+
 if __name__ == '__main__':
     load()
     # Prevent multiple browser windows being opened because of code reloading
@@ -271,4 +283,3 @@ if __name__ == '__main__':
     if 'WERKZEUG_RUN_MAIN' not in os.environ:
         threading.Timer(1, lambda: webbrowser.open(APP_URL)).start()
     app.run()
-
