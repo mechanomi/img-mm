@@ -1,6 +1,6 @@
 # Image Matchmaker
 
-[![Travis CI status](https://img.shields.io/travis/mechanomi/img-mm/master.svg)](https://travis-ci.org/mechanomi/img-mm) [![Total alerts](https://img.shields.io/lgtm/alerts/g/mechanomi/img-mm.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/mechanomi/img-mm/alerts/) [![Language grade: Python](https://img.shields.io/lgtm/grade/python/g/mechanomi/img-mm.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/mechanomi/img-mm/context:python)
+[![Travis CI status](https://img.shields.io/travis/mechanomi/img-mm/master.svg)](https://travis-ci.org/mechanomi/img-mm) [![Total alerts](https://img.shields.io/lgtm/alerts/g/mechanomi/img-mm.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/mechanomi/img-mm/alerts/) [![Language grade: Python](https://img.shields.io/lgtm/grade/python/g/mechanomi/img-mm.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/mechanomi/img-mm/context:python) [![Known Vulnerabilities](https://snyk.io/test/github/mechanomi/img-mm/badge.svg?targetFile=requirements.txt)](https://snyk.io/test/github/mechanomi/img-mm?targetFile=requirements.txt)
 
 Matchmaking system for quickly ranking huge collections of images.
 
@@ -80,7 +80,7 @@ Matchmaking system for quickly ranking huge collections of images.
 - [ ] Develop release process
 - [ ] Codecov setup
 - [X] LGTM setup
-- [ ] snyk.io setup
+- [X] snyk.io setup
 - [ ] pepy.tech setup
 - [ ] enable other versions of Python (Travis CI)
 
