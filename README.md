@@ -100,7 +100,7 @@ Matchmaking system for quickly ranking huge collections of images.
 - [ ] Add options to specify how many images to put in a match
 - [ ] Add options to convert rank to standard five-star rating metadata
   (logarithmic?) so files can be sorted in other apps
-- [ ] Add options to write metadata to filename (append) so files can be sorted
+- [X] Add options to write metadata to filename (append) so files can be sorted
   in file manager
 
 ### Interface enchainments
