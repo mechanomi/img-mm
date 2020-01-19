@@ -46,6 +46,7 @@ eligible_imgs = []
 
 imgs_index = {}
 
+
 def get_img_path(img_filename):
     allowed = False
     img_path = pathlib.Path(img_filename).resolve()
@@ -112,10 +113,14 @@ def get_img(img_path):
 def update_img(img_dict, rating, rm=False):
     print("Update from %s to %s" % (img_dict["rating"].mu, rating.mu))
     # Save current state
-    set_xattr(img_dict["filename"], PREV_MU_XATTR, str(img_dict["rating"].mu))
-    set_xattr(img_dict["filename"], PREV_SIGMA_XATTR, str(img_dict["rating"].sigma))
-    set_xattr(img_dict["filename"], PREV_INDEX_XATTR, str(imgs_index[img_dict["filename"]]))
-    set_xattr(img_dict["filename"], PREV_FILENAME_XATTR, img_dict["filename"])
+    prev_mu = str(img_dict["rating"].mu)
+    prev_sigma = str(img_dict["rating"].sigma)
+    prev_index = str(imgs_index[img_dict["filename"]])
+    prev_filename = img_dict["filename"]
+    set_xattr(img_dict["filename"], PREV_MU_XATTR, prev_mu)
+    set_xattr(img_dict["filename"], PREV_SIGMA_XATTR, prev_sigma)
+    set_xattr(img_dict["filename"], PREV_INDEX_XATTR, prev_index)
+    set_xattr(img_dict["filename"], PREV_FILENAME_XATTR, prev_filename)
     # Update state
     set_xattr(img_dict["filename"], MU_XATTR, str(rating.mu))
     set_xattr(img_dict["filename"], SIGMA_XATTR, str(rating.sigma))
@@ -179,7 +184,7 @@ def undo_update_img(img_dict, rm=False):
     shutil.move(img_dict["filename"], prev_filename)
     prev_img = get_img(prev_filename)
     if rm:
-        eligible_imgs.insert(int(prev_index), prev_file)
+        eligible_imgs.insert(int(prev_index), prev_img)
     else:
         for i, img in enumerate(eligible_imgs):
             if img["filename"] == img_dict["filename"]:
