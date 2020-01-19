@@ -19,7 +19,7 @@ from pprint import pprint
 
 app = flask.Flask(__name__)
 
-APP_URL = 'http://127.0.0.1:5000/'
+APP_URL = "http://127.0.0.1:5000/"
 RANK_MULTIPLIER = 1000
 TEMPLATE = "img-mm.tpl"
 MU_XATTR = "img-mm.ts.mu"
@@ -63,9 +63,8 @@ def get_img_path(img_filename):
 
 def rank(rating):
     rank = str(
-        (50 * RANK_MULTIPLIER) - round(
-            (rating.mu - (3 * rating.sigma)) * RANK_MULTIPLIER
-        )
+        (50 * RANK_MULTIPLIER)
+        - round((rating.mu - (3 * rating.sigma)) * RANK_MULTIPLIER)
     )
     return rank
 
@@ -79,7 +78,7 @@ def get_xattr(filename, name):
 
 
 def set_xattr(filename, name, value):
-    xattr.setxattr(filename, name, value.encode('UTF8'))
+    xattr.setxattr(filename, name, value.encode("UTF8"))
 
 
 def get_img(img_path):
@@ -106,7 +105,7 @@ def get_img(img_path):
         "prev_sigma": prev_sigma,
         "prev_index": prev_index,
         "prev_filename": prev_filename,
-        "rank": rank(rating)
+        "rank": rank(rating),
     }
 
 
@@ -124,7 +123,7 @@ def update_img(img_dict, rating, rm=False):
     # Update state
     set_xattr(img_dict["filename"], MU_XATTR, str(rating.mu))
     set_xattr(img_dict["filename"], SIGMA_XATTR, str(rating.sigma))
-    suffix = re.split(r'^(\d+R)\s+?', img_dict["path"].name)[-1]
+    suffix = re.split(r"^(\d+R)\s+?", img_dict["path"].name)[-1]
     new_name = "%sR %s" % (rank(rating), suffix)
     if not rm:
         new_filename = str(img_dict["path"].parent.joinpath(new_name))
@@ -138,7 +137,7 @@ def update_img(img_dict, rating, rm=False):
             if not rm:
                 eligible_imgs[i] = new_file
             else:
-                del(eligible_imgs[i])
+                del eligible_imgs[i]
     return new_file
 
 
@@ -151,8 +150,9 @@ def handle_match(win, lose, rm=False):
         # File has gone. User might have refreshed page after file was renamed.
         # Either way, no way to recover, so take no action.
         return
-    win_rating, lose_rating = \
-        trueskill.rate_1vs1(win_file["rating"], lose_file["rating"])
+    win_rating, lose_rating = trueskill.rate_1vs1(
+        win_file["rating"], lose_file["rating"]
+    )
     print("Before:")
     print("  Win:  " + rank(win_file["rating"]) + " " + win_file["filename"])
     print("  Lose: " + rank(lose_file["rating"]) + " " + lose_file["filename"])
@@ -235,7 +235,7 @@ def get_candidates():
         if highest_sigma_file is None:
             highest_sigma_file = img_dict
             continue
-        if img_dict['rating'].sigma > highest_sigma_file['rating'].sigma:
+        if img_dict["rating"].sigma > highest_sigma_file["rating"].sigma:
             highest_sigma_file = img_dict
             continue
     # Select the file with the closest rank
@@ -246,7 +246,8 @@ def get_candidates():
         if img_dict["filename"] == highest_sigma_file["filename"]:
             continue
         mu_difference = abs(
-            highest_sigma_file['rating'].mu - img_dict['rating'].mu)
+            highest_sigma_file["rating"].mu - img_dict["rating"].mu
+        )
         if closest_mu_file is None or mu_difference < lowest_mu_difference:
             closest_mu_file = img_dict
             lowest_mu_difference = mu_difference
@@ -263,9 +264,9 @@ def get_arg_img_path(param):
     return img_path
 
 
-@app.route('/img')
+@app.route("/img")
 def img():
-    img_path = get_arg_img_path('filename')
+    img_path = get_arg_img_path("filename")
     if not img_path:
         raise Exception("Not a valid path")
     img_filename = str(img_path)
@@ -274,13 +275,13 @@ def img():
     return flask.send_file(img_file, mimetype=mimetype)
 
 
-@app.route('/')
+@app.route("/")
 def index():
     undo = None
     results = None
-    unwin = get_arg_img_path('unwin')
-    unlose = get_arg_img_path('unlose')
-    unrm = get_arg_img_path('unrm')
+    unwin = get_arg_img_path("unwin")
+    unlose = get_arg_img_path("unlose")
+    unrm = get_arg_img_path("unrm")
     if unwin is not None:
         # Undoing something takes preference
         if unlose is not None:
@@ -289,9 +290,9 @@ def index():
             undo = handle_undo(unwin, unrm, rm=True)
     else:
         # Not undoing anything
-        win = get_arg_img_path('win')
-        lose = get_arg_img_path('lose')
-        rm = get_arg_img_path('rm')
+        win = get_arg_img_path("win")
+        lose = get_arg_img_path("lose")
+        rm = get_arg_img_path("rm")
         if win is not None:
             if lose is not None:
                 results = handle_match(win, lose)
@@ -300,15 +301,15 @@ def index():
     context = {
         "undo": undo,
         "results": results,
-        "candidates": get_candidates()
+        "candidates": get_candidates(),
     }
     return flask.render_template(TEMPLATE, **context)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     load_imgs()
     # Prevent multiple browser windows being opened because of code reloading
     # when Flask debug is active
-    if 'WERKZEUG_RUN_MAIN' not in os.environ:
+    if "WERKZEUG_RUN_MAIN" not in os.environ:
         threading.Timer(1, lambda: webbrowser.open(APP_URL)).start()
     app.run()

@@ -8,6 +8,8 @@ PYTHON      := python3.7
 PIP         := $(PYTHON) -m pip
 FLAKE8      := $(BIN_DIR)/flake8
 FLAKE8_ARGS := --count --show-source --max-complexity=8 --statistics
+BLACK       := $(BIN_DIR)/black
+BLACK_ARGS  := --line-length 79
 
 help:
 	@echo "Options:"
@@ -24,10 +26,21 @@ $(FLAKE8): $(ACTIVATE)
 	. $(ACTIVATE) && \
 	    $(PYTHON) -m pip install --upgrade -r requirements-test.txt
 
-.PHONY: test
-test: $(FLAKE8)
+$(BLACK): $(ACTIVATE)
 	. $(ACTIVATE) && \
-	    $(FLAKE8) $(SRC_DIR) $(FLAKE8_ARGS)
+	    $(PYTHON) -m pip install --upgrade -r requirements-test.txt
+
+.PHONY: test
+test: $(FLAKE8) $(BLACK)
+	. $(ACTIVATE) && \
+	    $(FLAKE8) $(FLAKE8_ARGS) $(SRC_DIR)
+	. $(ACTIVATE) && \
+	    $(BLACK) $(BLACK_ARGS) --check $(SRC_DIR)
+
+reformat:
+	. $(ACTIVATE) && \
+	    $(BLACK) $(BLACK_ARGS) $(SRC_DIR)
+
 
 .PHONY: dev
 dev:
