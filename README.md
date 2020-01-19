@@ -1,6 +1,6 @@
 # Image Matchmaker
 
-[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black) [![Travis CI status](https://img.shields.io/travis/mechanomi/img-mm/master.svg)](https://travis-ci.org/mechanomi/img-mm) [![Total alerts](https://img.shields.io/lgtm/alerts/g/mechanomi/img-mm.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/mechanomi/img-mm/alerts/) [![Language grade: Python](https://img.shields.io/lgtm/grade/python/g/mechanomi/img-mm.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/mechanomi/img-mm/context:python) [![Known Vulnerabilities](https://snyk.io/test/github/mechanomi/img-mm/badge.svg?targetFile=requirements.txt)](https://snyk.io/test/github/mechanomi/img-mm?targetFile=requirements.txt)
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black) [![Travis CI status](https://img.shields.io/travis/mechanomi/img-mm/master.svg)](https://travis-ci.org/mechanomi/img-mm) [![Total alerts](https://img.shields.io/lgtm/alerts/g/mechanomi/img-mm.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/mechanomi/img-mm/alerts/) [![Language grade: Python](https://img.shields.io/lgtm/grade/python/g/mechanomi/img-mm.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/mechanomi/img-mm/context:python)
 
 Matchmaking system for quickly ranking huge collections of images.
 
