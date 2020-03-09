@@ -1,7 +1,7 @@
 <style>
 
 body {
-    background: url(img?filename=src/assets/bg.png);
+    background: url(img?filename={{ src_dir }}/assets/bg.png);
     margin: 0 0 1vh 1vh;
     padding: 0;
 }
@@ -117,32 +117,52 @@ img {
 {% endif %}
 
 <div class="candidate" id="candidate-0">
+  <img src="img?filename={{ candidates[0]['filename'] | urlencode }}&ts={{ ts }}" title="{{ candidates[0]['rank'] }}, {{ candidates[0]['rating'].sigma }}" onclick="submit()" >
+  <br><br>
+  <form id="c0-rotate-cw">
+    <input type="hidden" name="rotate_img" value="{{ candidates[0]['filename'] }}">
+    <input type="hidden" name="direction" value="cw">
+    <input type="submit" value="↻">
+  </form>
   <form id="c0-win">
-    <input type="hidden" name="win" value="{{ candidates[0]['filename'] }}">
-    <input type="hidden" name="lose" value="{{ candidates[1]['filename'] }}">
-    <img src="img?filename={{ candidates[0]['filename'] | urlencode }}" title="{{ candidates[0]['rank'] }}, {{ candidates[0]['rating'].sigma }}" onclick="submit()" >
-    <br><br>
-    <input type="submit" value="WIN">
+    <input type="hidden" name="win" value="{{ candidates[1]['filename'] }}">
+    <input type="hidden" name="lose" value="{{ candidates[0]['filename'] }}">
+    <input type="submit" value="LOSE">
   </form>
   <form id="c0-rm">
     <input type="hidden" name="win" value="{{ candidates[1]['filename'] }}">
     <input type="hidden" name="rm" value="{{ candidates[0]['filename'] }}">
     <input type="submit" value="REMOVE">
   </form>
+  <form id="c0-rotate-ccw">
+    <input type="hidden" name="rotate_img" value="{{ candidates[0]['filename'] }}">
+    <input type="hidden" name="direction" value="ccw">
+    <input type="submit" value="↺">
+  </form>
 </div>
 
 <div class="candidate" id="candidate-1">
+  <img src="img?filename={{ candidates[1]['filename'] | urlencode }}&ts={{ ts }}" title="{{ candidates[1]['rank'] }}, {{ candidates[0]['rating'].sigma }}" onclick="submit()">
+  <br><br>
+  <form id="c0-rotate-cw">
+    <input type="hidden" name="rotate_img" value="{{ candidates[1]['filename'] }}">
+    <input type="hidden" name="direction" value="cw">
+    <input type="submit" value="↻">
+  </form>
   <form id="c1-win">
-    <input type="hidden" name="win" value="{{ candidates[1]['filename'] }}">
-    <input type="hidden" name="lose" value="{{ candidates[0]['filename'] }}">
-    <img src="img?filename={{ candidates[1]['filename'] | urlencode }}" title="{{ candidates[1]['rank'] }}, {{ candidates[0]['rating'].sigma }}" onclick="submit()">
-    <br><br>
-    <input type="submit" value="WIN">
+    <input type="hidden" name="win" value="{{ candidates[0]['filename'] }}">
+    <input type="hidden" name="lose" value="{{ candidates[1]['filename'] }}">
+    <input type="submit" value="LOSE">
   </form>
   <form id="c1-rm">
     <input type="hidden" name="win" value="{{ candidates[0]['filename'] }}">
     <input type="hidden" name="rm" value="{{ candidates[1]['filename'] }}">
     <input type="submit" value="REMOVE">
+  </form>
+  <form id="c0-rotate-ccw">
+    <input type="hidden" name="rotate_img" value="{{ candidates[1]['filename'] }}">
+    <input type="hidden" name="direction" value="ccw">
+    <input type="submit" value="↺">
   </form>
 </div>
 

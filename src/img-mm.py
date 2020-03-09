@@ -1,4 +1,5 @@
 import mimetypes
+import time
 import os
 import pathlib
 import re
@@ -10,6 +11,8 @@ import webbrowser
 from flask import request
 
 from urllib.parse import unquote
+
+from PIL import Image
 
 import flask
 import trueskill
@@ -37,10 +40,11 @@ SUPPORTED_EXTS = [
     ".webp",
 ]
 
+src_dir = pathlib.Path(os.path.dirname(__file__))
 cwd = pathlib.Path.cwd()
-tmp_path = pathlib.Path("/tmp")
+tmp_path = pathlib.Path("/tmp").resolve()
 
-ALLOWED_PATHS = [cwd, tmp_path]
+ALLOWED_PATHS = [src_dir, cwd, tmp_path]
 
 eligible_imgs = []
 
@@ -50,8 +54,11 @@ imgs_index = {}
 def get_img_path(img_filename):
     allowed = False
     img_path = pathlib.Path(img_filename).resolve()
+
     for allowed_path in ALLOWED_PATHS:
         try:
+            print(allowed_path)
+            print(img_path)
             img_path.relative_to(allowed_path)
             allowed = True
         except ValueError:
@@ -211,6 +218,18 @@ def handle_undo(win, lose, rm=False):
     return undo
 
 
+
+def handle_rotate(rotate_img, cw=True):
+    img = get_img(rotate_img)
+    img_obj = Image.open(img["filename"])
+    print("rotating")
+    if cw:
+        out = img_obj.rotate(-90)
+    else:
+        out = img_obj.rotate(90)
+    out.save(img["filename"])
+
+
 def load_imgs():
     img_filenames = list(cwd.rglob("*"))
     if len(img_filenames) < 2:
@@ -255,6 +274,11 @@ def get_candidates():
     candidates = [highest_sigma_file, closest_mu_file]
     return candidates
 
+def get_arg(param):
+    param = request.args.get(param)
+    if not param:
+        return None
+    return param
 
 def get_arg_img_path(param):
     img_filename = request.args.get(param)
@@ -277,28 +301,44 @@ def img():
 
 @app.route("/")
 def index():
+    print("test")
     undo = None
     results = None
-    unwin = get_arg_img_path("unwin")
-    unlose = get_arg_img_path("unlose")
-    unrm = get_arg_img_path("unrm")
-    if unwin is not None:
-        # Undoing something takes preference
-        if unlose is not None:
-            undo = handle_undo(unwin, unlose)
-        if unrm is not None:
-            undo = handle_undo(unwin, unrm, rm=True)
+    rotate_img = get_arg_img_path("rotate_img")
+    if rotate_img is not None:
+        print("rotate_img")
+        # Rotating something takes preference
+        direction = get_arg("direction")
+        print(direction)
+        if direction == "cw":
+            print("abt to handle rotate")
+            handle_rotate(rotate_img)
+        if direction == "ccw":
+            print("abt to handle rotate")
+            handle_rotate(rotate_img, False)
     else:
-        # Not undoing anything
-        win = get_arg_img_path("win")
-        lose = get_arg_img_path("lose")
-        rm = get_arg_img_path("rm")
-        if win is not None:
-            if lose is not None:
-                results = handle_match(win, lose)
-            if rm is not None:
-                results = handle_match(win, rm, rm=True)
+        unwin = get_arg_img_path("unwin")
+        unlose = get_arg_img_path("unlose")
+        unrm = get_arg_img_path("unrm")
+        if unwin is not None:
+            # Undoing something takes preference
+            if unlose is not None:
+                undo = handle_undo(unwin, unlose)
+            if unrm is not None:
+                undo = handle_undo(unwin, unrm, rm=True)
+        else:
+            # Not undoing anything
+            win = get_arg_img_path("win")
+            lose = get_arg_img_path("lose")
+            rm = get_arg_img_path("rm")
+            if win is not None:
+                if lose is not None:
+                    results = handle_match(win, lose)
+                if rm is not None:
+                    results = handle_match(win, rm, rm=True)
     context = {
+        "src_dir": src_dir,
+        "ts": time.time(),
         "undo": undo,
         "results": results,
         "candidates": get_candidates(),
