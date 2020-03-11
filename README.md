@@ -4,6 +4,7 @@
 
 Matchmaking system for quickly ranking huge collections of images.
 
+
 ## High-level goals
 
 - [x] Uses simple Python web app framework
@@ -24,7 +25,9 @@ Matchmaking system for quickly ranking huge collections of images.
   image zoom plugins)
 - [ ] App should be able to be run like a regular OS app
 
+
 ## Initial milestones
+
 
 ### MVP
 
@@ -42,6 +45,7 @@ Matchmaking system for quickly ranking huge collections of images.
 - [X] Modify app to use a form to select one image
 - [X] Modify app to calculate new ranks and write to image metadata
 - [X] Record ranks using filenames
+
 
 ### Improve MVP
 
@@ -62,32 +66,9 @@ Matchmaking system for quickly ranking huge collections of images.
 - [X] Fix restoration after undoing a delete
 - [ ] Modify CLI script to use
   [Click](https://www.palletsprojects.com/p/click/))
-- [ ] Add browser auto-reloading when source files change
 - [ ] Add options to CLI script to control how images are loaded (passed in via
   STDIN, arguments, or implement our file search)
-
-### Project setup
-
-- [X] Write initial Travis CI tests
-- [ ] Research functional testing frameworks and implement initial tests
-- [X] Research code standard testing frameworks and implement initial tests
-- [ ] Create initial docs project infrastructure
-- [ ] Host docs on Read The Docs
-- [ ] Write the initial docs
-- [ ] Write initial docs tests
-- [ ] Add top-level documentation
-- [X] Convert app into package (instead of module)
-- [ ] Set up PyPI package
-- [ ] Develop release process
-- [ ] Codecov setup
-- [X] LGTM setup
-- [X] snyk.io setup
-- [ ] pepy.tech setup
-- [ ] enable other versions of Python (Travis CI)
-
-### Misc
-
-- [ ] Move imgmm readme to issues
+- [ ] Move imgmm README tasks to GitHub issues
 - [ ]	Add sqlite cache
 - [ ] Fix stats calculation
 - [ ] Look into file system changes monitoring
@@ -99,16 +80,47 @@ Matchmaking system for quickly ranking huge collections of images.
 - [ ] Calculate good match based on image similarity too (perceptual hash,
   hamming distance, multiply factors to generate match quality)
 
+
+### Project setup
+
+- [X] Convert app into package (instead of module)
+- [ ] Set up PyPI package
+- [ ] Develop release process
+- [ ] Codecov setup
+- [X] LGTM setup
+- [X] snyk.io setup
+- [ ] pepy.tech setup
+- [ ] enable other versions of Python (Travis CI)
+
+
+### Tests
+
+- [X] Write initial Travis CI tests
+- [ ] Research functional testing frameworks and implement initial tests
+- [X] Research code standard testing frameworks and implement initial tests
+- [ ] Write initial docs tests
+- [ ] Add top-level documentation
+
+
+### Docs
+
+- [ ] Create initial docs project infrastructure
+- [ ] Host docs on Read The Docs
+- [ ] Write the initial docs
+
+
 ### Chrome extensions compatibility
 
 - [ ] Test interface for compatibility with relevant Chrome browser extensions
   (e.g., image zoom extensions)
 - [ ] Modify interface to improve compatibility
 
+
 ### Speed improvements
 
 - [ ] Add options to CLI script to intermittently load small random batches of
   images to speed things up with large collections
+
 
 ### Match enhancements
 
@@ -118,21 +130,26 @@ Matchmaking system for quickly ranking huge collections of images.
 - [X] Add options to write metadata to filename (append) so files can be sorted
   in file manager
 
+
 ### Interface enchainments
 
 TBD
+
 
 ### Design enhancements
 
 TBD
 
+
 ### Cross-browser compatibility
 
 TBD
 
+
 ### Accessibility
 
 TBD
+
 
 ### Hosted version
 
