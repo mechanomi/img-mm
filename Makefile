@@ -1,6 +1,6 @@
+APP_NAME    := img-mm
 TOP_DIR     := $(abspath $(dir $(lastword $(MAKEFILE_LIST))))
 SRC_DIR     := $(TOP_DIR)/src
-IMG_MM      := $(SRC_DIR)/img-mm.py
 VENV_DIR    := $(TOP_DIR)/.venv
 BIN_DIR     := $(VENV_DIR)/bin
 ACTIVATE    := $(BIN_DIR)/activate
@@ -49,7 +49,9 @@ dev:
 	    false; \
 	fi
 	. $(ACTIVATE) && \
-	    $(PYTHON) -m pip install --upgrade -r requirements.txt
+	    $(PYTHON) -m pip install -e .
 	. $(ACTIVATE) && \
 	    cd "$(DIR)" && \
-	    FLASK_ENV=development $(PYTHON) $(IMG_MM)
+	    FLASK_ENV=development \
+	    FLASK_APP=$(APP_NAME) \
+	    flask run
