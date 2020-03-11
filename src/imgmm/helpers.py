@@ -10,9 +10,9 @@ def get_arg(param):
         return None
     return param
 
-def get_arg_img_path(param):
+def get_arg_img_path(fs, param):
     img_filename = request.args.get(param)
     if not img_filename:
         return None
-    img_path = core.get_img_path(unquote(img_filename))
+    img_path = fs.get_img_path(unquote(img_filename))
     return img_path
