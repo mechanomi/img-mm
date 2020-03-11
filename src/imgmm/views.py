@@ -18,19 +18,19 @@ import flask
 import trueskill
 import xattr
 
-from pprint import pprint
+from imgmm import app
 
-app = flask.Flask(__name__)
+from pprint import pprint
 
 APP_URL = "http://127.0.0.1:5000/"
 RANK_MULTIPLIER = 1000
-TEMPLATE = "img-mm.tpl"
-MU_XATTR = "img-mm.ts.mu"
-SIGMA_XATTR = "img-mm.ts.sigma"
-PREV_MU_XATTR = "img-mm.ts.mu.prev"
-PREV_SIGMA_XATTR = "img-mm.ts.sigma.prev"
-PREV_INDEX_XATTR = "img-mm.index.prev"
-PREV_FILENAME_XATTR = "img-mm.filename.prev"
+TEMPLATE = "imgmm.tpl"
+MU_XATTR = "imgmm.ts.mu"
+SIGMA_XATTR = "imgmm.ts.sigma"
+PREV_MU_XATTR = "imgmm.ts.mu.prev"
+PREV_SIGMA_XATTR = "imgmm.ts.sigma.prev"
+PREV_INDEX_XATTR = "imgmm.index.prev"
+PREV_FILENAME_XATTR = "imgmm.filename.prev"
 SUPPORTED_EXTS = [
     ".bmp",
     ".gif",
@@ -367,12 +367,3 @@ def index():
         "candidates": get_candidates(),
     }
     return flask.render_template(TEMPLATE, **context)
-
-
-if __name__ == "__main__":
-    # load_imgs()
-    # Prevent multiple browser windows being opened because of code reloading
-    # when Flask debug is active
-    if "WERKZEUG_RUN_MAIN" not in os.environ:
-        threading.Timer(1, lambda: webbrowser.open(APP_URL)).start()
-    app.run()

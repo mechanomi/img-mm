@@ -1,8 +1,8 @@
 from setuptools import setup
 
 setup(
-    name='img-mm',
-    packages=['img-mm'],
+    name='imgmm',
+    packages=['imgmm'],
     include_package_data=True,
     install_requires=[
         'Flask',

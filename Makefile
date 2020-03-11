@@ -1,4 +1,4 @@
-APP_NAME    := img-mm
+APP_NAME    := imgmm
 TOP_DIR     := $(abspath $(dir $(lastword $(MAKEFILE_LIST))))
 SRC_DIR     := $(TOP_DIR)/src
 VENV_DIR    := $(TOP_DIR)/.venv
@@ -24,11 +24,11 @@ $(ACTIVATE):
 
 $(FLAKE8): $(ACTIVATE)
 	. $(ACTIVATE) && \
-	    $(PYTHON) -m pip install --upgrade -r requirements-test.txt
+	    $(PYTHON) -m pip install --upgrade -r requirements.txt
 
 $(BLACK): $(ACTIVATE)
 	. $(ACTIVATE) && \
-	    $(PYTHON) -m pip install --upgrade -r requirements-test.txt
+	    $(PYTHON) -m pip install --upgrade -r requirements.txt
 
 .PHONY: test
 test: $(FLAKE8) $(BLACK)

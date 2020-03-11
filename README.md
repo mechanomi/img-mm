@@ -1,6 +1,6 @@
 # Image Matchmaker
 
-[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black) [![Travis CI status](https://img.shields.io/travis/mechanomi/img-mm/master.svg)](https://travis-ci.org/mechanomi/img-mm) [![Total alerts](https://img.shields.io/lgtm/alerts/g/mechanomi/img-mm.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/mechanomi/img-mm/alerts/) [![Language grade: Python](https://img.shields.io/lgtm/grade/python/g/mechanomi/img-mm.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/mechanomi/img-mm/context:python)
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black) [![Travis CI status](https://img.shields.io/travis/mechanomi/imgmm/master.svg)](https://travis-ci.org/mechanomi/imgmm) [![Total alerts](https://img.shields.io/lgtm/alerts/g/mechanomi/imgmm.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/mechanomi/imgmm/alerts/) [![Language grade: Python](https://img.shields.io/lgtm/grade/python/g/mechanomi/imgmm.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/mechanomi/imgmm/context:python)
 
 Matchmaking system for quickly ranking huge collections of images.
 
@@ -76,7 +76,7 @@ Matchmaking system for quickly ranking huge collections of images.
 - [ ] Write the initial docs
 - [ ] Write initial docs tests
 - [ ] Add top-level documentation
-- [ ] Convert app into package (instead of module)
+- [X] Convert app into package (instead of module)
 - [ ] Set up PyPI package
 - [ ] Develop release process
 - [ ] Codecov setup
@@ -87,7 +87,7 @@ Matchmaking system for quickly ranking huge collections of images.
 
 ### Misc
 
-- [ ] Move img-mm readme to issues
+- [ ] Move imgmm readme to issues
 - [ ]	Add sqlite cache
 - [ ] Fix stats calculation
 - [ ] Look into file system changes monitoring
