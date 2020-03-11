@@ -2,7 +2,7 @@
 
 body {
     background: url(img?filename={{ src_dir }}/assets/bg.png);
-    margin: 0 0 1vh 1vh;
+    margin: 1vh;
     padding: 0;
 }
 
@@ -59,7 +59,14 @@ img {
     clear: left;
 }
 
+.status {
+    background: white;
+    padding: 1vh;
+}
+
 </style>
+
+<p class="status">{{ imgs_count }} images, {{ unrated_imgs_count }} unrated, {{ unrated_pct }}% coverage, {{ avg_sigma }} avg. sigma</p>
 
 {% if undo %}
 
@@ -165,6 +172,8 @@ img {
     <input type="submit" value="↺">
   </form>
 </div>
+
+<br><br>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 

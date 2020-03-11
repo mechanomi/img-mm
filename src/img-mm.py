@@ -50,6 +50,10 @@ eligible_imgs = []
 
 imgs_index = {}
 
+unrated_imgs_count = 0
+
+total_sigma = 0
+
 
 def get_img_path(img_filename):
     allowed = False
@@ -100,8 +104,12 @@ def get_img(img_path):
     if mu is not None or sigma is not None:
         previous_rating = True
         rating = trueskill.Rating(mu=float(mu), sigma=float(sigma))
+        global total_sigma
+        total_sigma+=float(sigma)
     else:
         rating = trueskill.Rating()
+        global unrated_imgs_count
+        unrated_imgs_count+=1
     return {
         "path": img_path,
         "filename": str(img_path),
@@ -230,7 +238,15 @@ def handle_rotate(rotate_img, cw=True):
     out.save(img["filename"])
 
 
+def reset():
+    global eligible_imgs, imgs_index, unrated_imgs_count, total_sigma
+    eligible_imgs = []
+    imgs_index = {}
+    unrated_imgs_count = 0
+    total_sigma = 0
+
 def load_imgs():
+    reset()
     img_filenames = list(cwd.rglob("*"))
     if len(img_filenames) < 2:
         print("Did not find images!")
@@ -301,7 +317,7 @@ def img():
 
 @app.route("/")
 def index():
-    print("test")
+    load_imgs()
     undo = None
     results = None
     rotate_img = get_arg_img_path("rotate_img")
@@ -336,9 +352,16 @@ def index():
                     results = handle_match(win, lose)
                 if rm is not None:
                     results = handle_match(win, rm, rm=True)
+    imgs_count = len(eligible_imgs)
+    unrated_pct = round(unrated_imgs_count/imgs_count * 100)
+    avg_sigma = round(total_sigma / imgs_count, 2)
     context = {
         "src_dir": src_dir,
         "ts": time.time(),
+        "imgs_count": imgs_count,
+        "unrated_imgs_count": unrated_imgs_count,
+        "unrated_pct": unrated_pct,
+        "avg_sigma": avg_sigma,
         "undo": undo,
         "results": results,
         "candidates": get_candidates(),
@@ -347,7 +370,7 @@ def index():
 
 
 if __name__ == "__main__":
-    load_imgs()
+    # load_imgs()
     # Prevent multiple browser windows being opened because of code reloading
     # when Flask debug is active
     if "WERKZEUG_RUN_MAIN" not in os.environ:
