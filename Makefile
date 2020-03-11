@@ -48,10 +48,8 @@ dev:
 	    echo "You must set the DIR variable to a directory"; \
 	    false; \
 	fi
-	. $(ACTIVATE) && \
-	    $(PYTHON) -m pip install -e .
-	. $(ACTIVATE) && \
-	    cd "$(DIR)" && \
+	$(PYTHON) -m pip install -e .
+	cd "$(DIR)" && \
 	    FLASK_ENV=development \
 	    FLASK_APP=$(APP_NAME) \
 	    flask run
