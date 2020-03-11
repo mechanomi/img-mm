@@ -56,7 +56,7 @@ def index():
                 if rm is not None:
                     results = core.handle_match(win, rm, rm=True)
     imgs_count = len(core.eligible_imgs)
-    unrated_pct = round(core.unrated_imgs_count / imgs_count * 100)
+    unrated_pct = round((imgs_count - core.unrated_imgs_count) / imgs_count * 100)
     avg_sigma = round(core.total_sigma / imgs_count, 2)
     context = {
         "src_dir": core.src_dir,
