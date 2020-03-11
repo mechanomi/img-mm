@@ -1,4 +1,2 @@
-Flask
-Pillow
-trueskill
-xattr
+flake8
+black
