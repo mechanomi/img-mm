@@ -1,4 +1,3 @@
-import mimetypes
 import os
 import pathlib
 import re
@@ -6,10 +5,6 @@ import shutil
 import sys
 import threading
 import webbrowser
-
-from flask import request
-
-from urllib.parse import unquote
 
 from PIL import Image
 
@@ -287,15 +282,3 @@ def get_candidates():
     candidates = [highest_sigma_file, closest_mu_file]
     return candidates
 
-def get_arg(param):
-    param = request.args.get(param)
-    if not param:
-        return None
-    return param
-
-def get_arg_img_path(param):
-    img_filename = request.args.get(param)
-    if not img_filename:
-        return None
-    img_path = get_img_path(unquote(img_filename))
-    return img_path

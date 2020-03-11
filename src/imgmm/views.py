@@ -5,11 +5,12 @@ import flask
 
 from imgmm import app
 from imgmm import core
+from imgmm import helpers
 
 
 @app.route("/img")
 def img():
-    img_path = core.get_arg_img_path("filename")
+    img_path = helpers.get_arg_img_path("filename")
     if not img_path:
         raise Exception("Not a valid path")
     img_filename = str(img_path)
@@ -23,11 +24,11 @@ def index():
     core.load_imgs()
     undo = None
     results = None
-    rotate_img = core.get_arg_img_path("rotate_img")
+    rotate_img = helpers.get_arg_img_path("rotate_img")
     if rotate_img is not None:
         print("rotate_img")
         # Rotating something takes preference
-        direction = core.get_arg("direction")
+        direction = helpers.get_arg("direction")
         print(direction)
         if direction == "cw":
             print("abt to handle rotate")
@@ -36,9 +37,9 @@ def index():
             print("abt to handle rotate")
             core.handle_rotate(rotate_img, False)
     else:
-        unwin = core.get_arg_img_path("unwin")
-        unlose = core.get_arg_img_path("unlose")
-        unrm = core.get_arg_img_path("unrm")
+        unwin = helpers.get_arg_img_path("unwin")
+        unlose = helpers.get_arg_img_path("unlose")
+        unrm = helpers.get_arg_img_path("unrm")
         if unwin is not None:
             # Undoing something takes preference
             if unlose is not None:
@@ -47,9 +48,9 @@ def index():
                 undo = core.handle_undo(unwin, unrm, rm=True)
         else:
             # Not undoing anything
-            win = core.get_arg_img_path("win")
-            lose = core.get_arg_img_path("lose")
-            rm = core.get_arg_img_path("rm")
+            win = helpers.get_arg_img_path("win")
+            lose = helpers.get_arg_img_path("lose")
+            rm = helpers.get_arg_img_path("rm")
             if win is not None:
                 if lose is not None:
                     results = core.handle_match(win, lose)
