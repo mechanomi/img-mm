@@ -76,6 +76,7 @@ Matchmaking system for quickly ranking huge collections of images.
 - [ ] Write the initial docs
 - [ ] Write initial docs tests
 - [ ] Add top-level documentation
+- [ ] Convert app into package (instead of module)
 - [ ] Set up PyPI package
 - [ ] Develop release process
 - [ ] Codecov setup
