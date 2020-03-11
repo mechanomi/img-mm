@@ -62,14 +62,9 @@ Matchmaking system for quickly ranking huge collections of images.
 - [X] Implement undo functionality
 - [X] Implement result action summary thumbnails
 - [X] Remove randomization
-- [ ] Preserve correct thumbnail order
 - [X] Fix restoration after undoing a delete
-- [ ] Modify CLI script to use
-  [Click](https://www.palletsprojects.com/p/click/))
-- [ ] Add options to CLI script to control how images are loaded (passed in via
-  STDIN, arguments, or implement our file search)
-- [ ] Move imgmm README tasks to GitHub issues
-- [ ]	Add sqlite cache
+- [ ] Preserve correct thumbnail order
+- [ ] Add sqlite cache
 - [ ] Fix stats calculation
 - [ ] Look into file system changes monitoring
 - [ ] Look into forking a subprocess to periodically update cache
@@ -81,9 +76,18 @@ Matchmaking system for quickly ranking huge collections of images.
   hamming distance, multiply factors to generate match quality)
 
 
+### CLI
+
+- [ ] Modify CLI script to use
+  [Click](https://www.palletsprojects.com/p/click/))
+- [ ] Add options to CLI script to control how images are loaded (passed in via
+  STDIN, arguments, or implement our file search)
+
+
 ### Project setup
 
 - [X] Convert app into package (instead of module)
+- [ ] Organize code into modules
 - [ ] Set up PyPI package
 - [ ] Develop release process
 - [ ] Codecov setup
@@ -91,6 +95,7 @@ Matchmaking system for quickly ranking huge collections of images.
 - [X] snyk.io setup
 - [ ] pepy.tech setup
 - [ ] enable other versions of Python (Travis CI)
+- [ ] Move imgmm README tasks to GitHub issues
 
 
 ### Tests
