@@ -84,6 +84,20 @@ Matchmaking system for quickly ranking huge collections of images.
 - [ ] pepy.tech setup
 - [ ] enable other versions of Python (Travis CI)
 
+### Misc
+
+- [ ] Move img-mm readme to issues
+- [ ]	Add sqlite cache
+- [ ] Fix stats calculation
+- [ ] Look into file system changes monitoring
+- [ ] Look into forking a subprocess to periodically update cache
+- [ ] Prioritize files that were updated longest ago (less volatile if you're
+  making active changes to the directory)
+- [ ] Add material design
+- [ ] Bind to 0.0.0.0 and test on mobile
+- [ ] Calculate good match based on image similarity too (perceptual hash,
+  hamming distance, multiply factors to generate match quality)
+
 ### Chrome extensions compatibility
 
 - [ ] Test interface for compatibility with relevant Chrome browser extensions
