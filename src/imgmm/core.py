@@ -103,6 +103,13 @@ class RankedImage(object):
         shutil.move(self.filename, new_filename)
         self.__init__(pathlib.Path(new_filename))
 
+    def undo_update(self, rm=False):
+        # Restore previous state
+        set_xattr(self.filename, self.MU_XATTR, self.prev_mu)
+        set_xattr(self.filename, self.SIGMA_XATTR, self.prev_sigma)
+        shutil.move(self.filename, self.prev_filename)
+        self.__init__(pathlib.Path(self.prev_filename))
+
 
 class FileSystem(object):
 
@@ -235,27 +242,15 @@ class FileSystem(object):
         return results
 
 
-    def undo_update_img(self, img_dict, rm=False):
-        # Get previous state
-        prev_mu = get_xattr(img_dict.filename, PREV_MU_XATTR)
-        prev_sigma = get_xattr(img_dict.filename, PREV_SIGMA_XATTR)
-        prev_index = get_xattr(img_dict.filename, PREV_INDEX_XATTR)
-        prev_filename = get_xattr(img_dict.filename, PREV_FILENAME_XATTR)
-        print("Prev mu: %s" % prev_mu)
-        print("Prev sigma: %s" % prev_sigma)
-        print("Prev filename: %s" % prev_filename)
-        # Restore previous state
-        set_xattr(img_dict.filename, MU_XATTR, prev_mu)
-        set_xattr(img_dict.filename, SIGMA_XATTR, prev_sigma)
-        shutil.move(img_dict.filename, prev_filename)
-        prev_img = self.get_img(prev_filename)
+    def undo_update_img(self, img, rm=False):
+        start_filename = img.filename
+        img.undo_update(rm)
         if rm:
-            self.eligible_imgs.insert(int(prev_index), prev_img)
+            self.eligible_imgs.insert(int(img.prev_index), img)
         else:
             for i, img in enumerate(self.eligible_imgs):
-                if img.filename == img_dict.filename:
-                    self.eligible_imgs[i] = prev_img
-        return prev_filename
+                if img.filename == start_filename:
+                    self.eligible_imgs[i] = img
 
 
     def handle_undo(self, win, lose, rm=False):
@@ -267,12 +262,12 @@ class FileSystem(object):
             # File has gone. User might have refreshed page after file was renamed.
             # Either way, no way to recover, so take no action.
             return
-        win = self.undo_update_img(win_dict, rm)
-        lose = self.undo_update_img(lose_dict, rm)
+        self.undo_update_img(win_dict, rm)
+        self.undo_update_img(lose_dict, rm)
         if not rm:
-            undo = {"win": self.get_img(win), "lose": self.get_img(lose)}
+            undo = {"win": win_dict, "lose": lose_dict}
         else:
-            undo = {"win": self.get_img(win), "rm": self.get_img(lose)}
+            undo = {"win": win_dict, "rm": lose_dict}
         pprint(undo)
         return undo
 
