@@ -17,12 +17,6 @@ from pprint import pprint
 APP_URL = "http://127.0.0.1:5000/"
 RANK_MULTIPLIER = 1000
 TEMPLATE = "imgmm.tpl"
-MU_XATTR = "imgmm.ts.mu"
-SIGMA_XATTR = "imgmm.ts.sigma"
-PREV_MU_XATTR = "imgmm.ts.mu.prev"
-PREV_SIGMA_XATTR = "imgmm.ts.sigma.prev"
-PREV_INDEX_XATTR = "imgmm.index.prev"
-PREV_FILENAME_XATTR = "imgmm.filename.prev"
 SUPPORTED_EXTS = [
     ".bmp",
     ".gif",
@@ -31,14 +25,6 @@ SUPPORTED_EXTS = [
     ".png",
     ".webp",
 ]
-
-
-def rank(rating):
-    rank = str(
-        (50 * RANK_MULTIPLIER)
-        - round((rating.mu - (3 * rating.sigma)) * RANK_MULTIPLIER)
-    )
-    return rank
 
 
 def get_xattr(filename, name):
@@ -51,6 +37,71 @@ def get_xattr(filename, name):
 
 def set_xattr(filename, name, value):
     xattr.setxattr(filename, name, value.encode("UTF8"))
+
+class RankedImage(object):
+
+    MU_XATTR = "imgmm.ts.mu"
+    SIGMA_XATTR = "imgmm.ts.sigma"
+    PREV_MU_XATTR = "imgmm.ts.mu.prev"
+    PREV_SIGMA_XATTR = "imgmm.ts.sigma.prev"
+    PREV_INDEX_XATTR = "imgmm.index.prev"
+    PREV_FILENAME_XATTR = "imgmm.filename.prev"
+
+    path = None
+    filename = None
+    mtime = None
+    prev_mu = None
+    prev_sigma = None
+    prev_index = None
+    prev_filename = None
+    previous_rating = None
+    rating = None
+    rank = None
+
+    def __init__(self, path):
+        self.path = path
+        self.filename = str(self.path)
+        self.mtime = os.path.getmtime(self.filename)
+        mu = get_xattr(self.filename, self.MU_XATTR)
+        sigma = get_xattr(self.filename, self.SIGMA_XATTR)
+        self.prev_mu = get_xattr(self.filename, self.PREV_MU_XATTR)
+        self.prev_sigma = get_xattr(self.filename, self.PREV_SIGMA_XATTR)
+        self.prev_index = get_xattr(self.filename, self.PREV_INDEX_XATTR)
+        self.prev_filename = get_xattr(self.filename, self.PREV_FILENAME_XATTR)
+        self.previous_rating = False
+        if mu is not None or sigma is not None:
+            self.previous_rating = True
+            self.set_rating(trueskill.Rating(mu=float(mu), sigma=float(sigma)))
+        else:
+            self.set_rating(trueskill.Rating())
+
+    def set_rating(self, rating):
+        self.rating = rating
+        self.rank = str(
+            (50 * RANK_MULTIPLIER)
+            - round((rating.mu - (3 * rating.sigma)) * RANK_MULTIPLIER)
+        )
+
+    def update(self, index, rating, rm=False):
+        print("Update from %s to %s" % (self.rating.mu, rating.mu))
+        # Save current state
+        set_xattr(self.filename, self.PREV_MU_XATTR, str(self.rating.mu))
+        set_xattr(self.filename, self.PREV_SIGMA_XATTR, str(self.rating.sigma))
+        set_xattr(self.filename, self.PREV_INDEX_XATTR, index)
+        set_xattr(self.filename, self.PREV_FILENAME_XATTR, self.filename)
+        # Update state
+        self.set_rating(rating)
+        set_xattr(self.filename, self.MU_XATTR, str(rating.mu))
+        set_xattr(self.filename, self.SIGMA_XATTR, str(rating.sigma))
+        suffix = re.split(r"^(\d+R)\s+?", self.path.name)[-1]
+        new_name = "%sR %s" % (self.rank, suffix)
+        if not rm:
+            new_filename = str(self.path.parent.joinpath(new_name))
+        else:
+            tmp_path = pathlib.PurePath("/tmp")
+            new_filename = str(tmp_path.joinpath(new_name))
+        shutil.move(self.filename, new_filename)
+        self.__init__(pathlib.Path(new_filename))
 
 
 class FileSystem(object):
@@ -83,33 +134,12 @@ class FileSystem(object):
 
 
     def get_img(self, img_path):
-        img_filename = str(img_path)
-        mu = get_xattr(img_filename, MU_XATTR)
-        sigma = get_xattr(img_filename, SIGMA_XATTR)
-        prev_mu = get_xattr(img_filename, PREV_MU_XATTR)
-        prev_sigma = get_xattr(img_filename, PREV_SIGMA_XATTR)
-        prev_index = get_xattr(img_filename, PREV_INDEX_XATTR)
-        prev_filename = get_xattr(img_filename, PREV_FILENAME_XATTR)
-        previous_rating = False
-        if mu is not None or sigma is not None:
-            previous_rating = True
-            rating = trueskill.Rating(mu=float(mu), sigma=float(sigma))
-            self.total_sigma+=float(sigma)
+        img = RankedImage(img_path)
+        if img.previous_rating:
+            self.total_sigma+=img.rating.sigma
         else:
-            rating = trueskill.Rating()
             self.unrated_imgs_count+=1
-        return {
-            "path": img_path,
-            "filename": str(img_path),
-            "mtime": os.path.getmtime(img_filename),
-            "previous_rating": previous_rating,
-            "rating": rating,
-            "prev_mu": prev_mu,
-            "prev_sigma": prev_sigma,
-            "prev_index": prev_index,
-            "prev_filename": prev_filename,
-            "rank": rank(rating),
-        }
+        return img
 
     def get_img_path(self, img_filename):
         allowed = False
@@ -127,36 +157,15 @@ class FileSystem(object):
         return img_path
 
 
-    def update_img(self, img_dict, rating, rm=False):
-        print("Update from %s to %s" % (img_dict["rating"].mu, rating.mu))
-        # Save current state
-        prev_mu = str(img_dict["rating"].mu)
-        prev_sigma = str(img_dict["rating"].sigma)
-        prev_index = str(self.imgs_index[img_dict["filename"]])
-        prev_filename = img_dict["filename"]
-        set_xattr(img_dict["filename"], PREV_MU_XATTR, prev_mu)
-        set_xattr(img_dict["filename"], PREV_SIGMA_XATTR, prev_sigma)
-        set_xattr(img_dict["filename"], PREV_INDEX_XATTR, prev_index)
-        set_xattr(img_dict["filename"], PREV_FILENAME_XATTR, prev_filename)
-        # Update state
-        set_xattr(img_dict["filename"], MU_XATTR, str(rating.mu))
-        set_xattr(img_dict["filename"], SIGMA_XATTR, str(rating.sigma))
-        suffix = re.split(r"^(\d+R)\s+?", img_dict["path"].name)[-1]
-        new_name = "%sR %s" % (rank(rating), suffix)
-        if not rm:
-            new_filename = str(img_dict["path"].parent.joinpath(new_name))
-        else:
-            tmp_path = pathlib.PurePath("/tmp")
-            new_filename = str(tmp_path.joinpath(new_name))
-        shutil.move(img_dict["filename"], new_filename)
-        new_file = self.get_img(new_filename)
-        for i, img in enumerate(self.eligible_imgs):
-            if img["filename"] == img_dict["filename"]:
+    def update_img(self, img, rating, rm=False):
+        index = str(self.imgs_index[img.filename])
+        img.update(index, rating, rm)
+        for i, eligible_img in enumerate(self.eligible_imgs):
+            if eligible_img.filename == img.prev_filename:
                 if not rm:
-                    self.eligible_imgs[i] = new_file
+                    self.eligible_imgs[i] = img
                 else:
                     del self.eligible_imgs[i]
-        return new_file
 
 
     def scan(self):
@@ -184,7 +193,7 @@ class FileSystem(object):
             if highest_sigma_file is None:
                 highest_sigma_file = img_dict
                 continue
-            if img_dict["rating"].sigma > highest_sigma_file["rating"].sigma:
+            if img_dict.rating.sigma > highest_sigma_file.rating.sigma:
                 highest_sigma_file = img_dict
                 continue
         # Select the file with the closest rank
@@ -192,10 +201,10 @@ class FileSystem(object):
         lowest_mu_difference = None
         for img_dict in self.eligible_imgs:
             # Don't pit an image against itself
-            if img_dict["filename"] == highest_sigma_file["filename"]:
+            if img_dict.filename == highest_sigma_file.filename:
                 continue
             mu_difference = abs(
-                highest_sigma_file["rating"].mu - img_dict["rating"].mu
+                highest_sigma_file.rating.mu - img_dict.rating.mu
             )
             if closest_mu_file is None or mu_difference < lowest_mu_difference:
                 closest_mu_file = img_dict
@@ -214,16 +223,10 @@ class FileSystem(object):
             # Either way, no way to recover, so take no action.
             return
         win_rating, lose_rating = trueskill.rate_1vs1(
-            win_file["rating"], lose_file["rating"]
+            win_file.rating, lose_file.rating
         )
-        print("Before:")
-        print("  Win:  " + rank(win_file["rating"]) + " " + win_file["filename"])
-        print("  Lose: " + rank(lose_file["rating"]) + " " + lose_file["filename"])
-        print("After:")
-        print("  Win:  " + rank(win_rating) + " " + win_file["filename"])
-        print("  Lose: " + rank(lose_rating) + " " + lose_file["filename"])
-        win_file = self.update_img(win_file, win_rating)
-        lose_file = self.update_img(lose_file, lose_rating, rm)
+        self.update_img(win_file, win_rating)
+        self.update_img(lose_file, lose_rating, rm)
         if not rm:
             results = {"win": win_file, "lose": lose_file}
         else:
@@ -234,23 +237,23 @@ class FileSystem(object):
 
     def undo_update_img(self, img_dict, rm=False):
         # Get previous state
-        prev_mu = get_xattr(img_dict["filename"], PREV_MU_XATTR)
-        prev_sigma = get_xattr(img_dict["filename"], PREV_SIGMA_XATTR)
-        prev_index = get_xattr(img_dict["filename"], PREV_INDEX_XATTR)
-        prev_filename = get_xattr(img_dict["filename"], PREV_FILENAME_XATTR)
+        prev_mu = get_xattr(img_dict.filename, PREV_MU_XATTR)
+        prev_sigma = get_xattr(img_dict.filename, PREV_SIGMA_XATTR)
+        prev_index = get_xattr(img_dict.filename, PREV_INDEX_XATTR)
+        prev_filename = get_xattr(img_dict.filename, PREV_FILENAME_XATTR)
         print("Prev mu: %s" % prev_mu)
         print("Prev sigma: %s" % prev_sigma)
         print("Prev filename: %s" % prev_filename)
         # Restore previous state
-        set_xattr(img_dict["filename"], MU_XATTR, prev_mu)
-        set_xattr(img_dict["filename"], SIGMA_XATTR, prev_sigma)
-        shutil.move(img_dict["filename"], prev_filename)
+        set_xattr(img_dict.filename, MU_XATTR, prev_mu)
+        set_xattr(img_dict.filename, SIGMA_XATTR, prev_sigma)
+        shutil.move(img_dict.filename, prev_filename)
         prev_img = self.get_img(prev_filename)
         if rm:
             self.eligible_imgs.insert(int(prev_index), prev_img)
         else:
             for i, img in enumerate(self.eligible_imgs):
-                if img["filename"] == img_dict["filename"]:
+                if img.filename == img_dict.filename:
                     self.eligible_imgs[i] = prev_img
         return prev_filename
 
@@ -276,10 +279,10 @@ class FileSystem(object):
 
     def handle_rotate(self, rotate_img, cw=True):
         img = self.get_img(rotate_img)
-        img_obj = Image.open(img["filename"])
+        img_obj = Image.open(img.filename)
         print("rotating")
         if cw:
             out = img_obj.rotate(-90)
         else:
             out = img_obj.rotate(90)
-        out.save(img["filename"])
+        out.save(img.filename)
