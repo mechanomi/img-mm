@@ -1,3 +1,3 @@
 # Anyrank
 
-Rank anything.
+Rank huge amounts of anything.
