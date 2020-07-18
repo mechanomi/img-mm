@@ -1,3 +1,3 @@
-# Cupid
+# The Lobby
 
-Matchmaking system for quickly ranking huge collections of anything.
+A competative matchmaking system for quickly ranking huge collections of anything.
