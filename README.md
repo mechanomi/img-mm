@@ -1,3 +1,3 @@
-# Anyrank
+# Matchmaker
 
-Rank huge amounts of anything.
+Matchmaking system for quickly ranking huge collections of things.
