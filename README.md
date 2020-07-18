@@ -63,8 +63,15 @@ Matchmaking system for quickly ranking huge collections of images.
 - [X] Implement result action summary thumbnails
 - [X] Remove randomization
 - [X] Fix restoration after undoing a delete
-- [ ] Preserve correct thumbnail order
+- [ ] Add batch script for fs sync
 - [ ] Add sqlite cache
+- [ ] Watch files for changes once loaded into cache
+- [ ] Add CLI to manage daemon and web server and open browser
+- [ ] Keep record of matches in db for predictable undos with variable index
+- [ ] Implement action log (so undos persist after redirect)
+- [ ] Implement redirect after taking an action (to recalculate candidate images)
+- [ ] Implement POST routes
+- [ ] Preserve correct thumbnail order
 - [ ] Fix stats calculation
 - [ ] Look into file system changes monitoring
 - [ ] Look into forking a subprocess to periodically update cache

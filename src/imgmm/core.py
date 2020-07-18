@@ -164,17 +164,6 @@ class FileSystem(object):
         return img_path
 
 
-    def update_img(self, img, rating, rm=False):
-        index = str(self.imgs_index[img.filename])
-        img.update(index, rating, rm)
-        for i, eligible_img in enumerate(self.eligible_imgs):
-            if eligible_img.filename == img.prev_filename:
-                if not rm:
-                    self.eligible_imgs[i] = img
-                else:
-                    del self.eligible_imgs[i]
-
-
     def scan(self):
         self.reset()
         img_filenames = list(self.cwd.rglob("*"))
@@ -220,6 +209,18 @@ class FileSystem(object):
         candidates = [highest_sigma_file, closest_mu_file]
         return candidates
 
+
+    def update_img(self, img, rating, rm=False):
+        index = str(self.imgs_index[img.filename])
+        img.update(index, rating, rm)
+        for i, eligible_img in enumerate(self.eligible_imgs):
+            if eligible_img.filename == img.prev_filename:
+                if not rm:
+                    self.eligible_imgs[i] = img
+                else:
+                    del self.eligible_imgs[i]
+
+
     def handle_match(self, win, lose, rm=False):
         pprint(("handle_match", win, lose, rm))
         try:
@@ -248,8 +249,9 @@ class FileSystem(object):
         if rm:
             self.eligible_imgs.insert(int(img.prev_index), img)
         else:
-            for i, img in enumerate(self.eligible_imgs):
-                if img.filename == start_filename:
+            # FIXME: this doesn't reset eligible_imgs as expected
+            for i, eligible_img in enumerate(self.eligible_imgs):
+                if eligible_img.filename == start_filename:
                     self.eligible_imgs[i] = img
 
 
